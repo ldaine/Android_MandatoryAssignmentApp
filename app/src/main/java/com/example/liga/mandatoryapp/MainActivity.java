@@ -1,8 +1,10 @@
 package com.example.liga.mandatoryapp;
 
 import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import android.widget.Button;
 import android.view.View;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+
+
         //setting listener functions
         inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
                 getMyAdapter().notifyDataSetChanged();
 
                 editText.setText("");
+
+
+
             }
         });
 
@@ -126,6 +134,19 @@ public class MainActivity extends AppCompatActivity {
 
                 bag.clear();
                 getMyAdapter().notifyDataSetChanged();
+
+
+                //make toast
+                String message = "List Cleared";
+                Context context = getApplicationContext();
+                CharSequence text = message;
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast =  Toast.makeText(context, text, duration);
+
+                toast.setGravity(Gravity.CENTER, 0, 0);
+
+                toast.show();
 
             }
         });
