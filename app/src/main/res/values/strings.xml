@@ -5,4 +5,5 @@
     <string name="outputHeader">Last added: </string>
     <string name="delete">Remove</string>
     <string name="outputRemovedHeader">Last removed: </string>
+    <string name="clear">Clear All</string>
 </resources>

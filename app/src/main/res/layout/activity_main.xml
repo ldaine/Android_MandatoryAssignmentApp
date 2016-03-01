@@ -77,6 +77,11 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/delete" />
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/clear" />
 
     </LinearLayout>
 

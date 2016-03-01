@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         //getting view elements
         final Button inputButton = (Button) findViewById(R.id.inputButton);
         final Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        final Button clearButton = (Button) findViewById(R.id.clearButton);
         final EditText editText = (EditText) findViewById(R.id.inputText);
         final TextView textView = (TextView) findViewById(R.id.outputText);
         final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
@@ -108,6 +109,22 @@ public class MainActivity extends AppCompatActivity {
 
                 bag.remove(index);
 
+                getMyAdapter().notifyDataSetChanged();
+
+            }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                latestAddedBagItem = "";
+                latestRemovedBagItem = "";
+
+                textView.setText(latestAddedBagItem);
+                textRemoveView.setText(latestRemovedBagItem);
+
+                bag.clear();
                 getMyAdapter().notifyDataSetChanged();
 
             }
