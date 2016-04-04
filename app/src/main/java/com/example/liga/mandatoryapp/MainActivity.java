@@ -21,12 +21,12 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "ActivityLifeCycle";
 
     //Properties
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<Product> adapter;
     ListView listView;
-    ArrayList<String> bag = new ArrayList<String>();
+    ArrayList<Product> bag = new ArrayList<Product>();
 
-    String latestAddedBagItem = "";
-    String latestRemovedBagItem = "";
+    Product latestAddedBagItem = new Product("", 0);
+    Product latestRemovedBagItem = new Product("", 0);
 
     //methods
     public ArrayAdapter getMyAdapter()
@@ -44,17 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
         if(savedInstanceState!= null){
 
-            String str = savedInstanceState.getString("savedLatestBagItem");
-            String removedItemStr = savedInstanceState.getString("savedLatestRemovedBagItem");
-            Log.d("DEBUG", str);
-            if(str != null){
-                latestAddedBagItem = str;
+            Product product = savedInstanceState.getParcelable("savedLatestBagItem");
+            Product removedItemProduct = savedInstanceState.getParcelable("savedLatestRemovedBagItem");
+            Log.d("DEBUG", product.name);
+            if(product != null){
+                latestAddedBagItem = product;
             }
-            if(removedItemStr != null){
-                latestRemovedBagItem = removedItemStr;
+            if(removedItemProduct != null){
+                latestRemovedBagItem = removedItemProduct;
             }
 
-            ArrayList list = savedInstanceState.getStringArrayList("savedBag");
+            ArrayList list = savedInstanceState.getParcelableArrayList("savedBag");
             if (list!=null){
                 bag = list;
             }
@@ -70,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         final ListView listView = (ListView) findViewById(R.id.list);
 
         //adding values to view
-        textView.setText(latestAddedBagItem);
-        textRemoveView.setText(latestRemovedBagItem);
+        textView.setText(latestAddedBagItem.name);
+        textRemoveView.setText(latestRemovedBagItem.name);
 
-        adapter =  new ArrayAdapter<String>(this,
+        adapter =  new ArrayAdapter<Product>(this,
                 android.R.layout.simple_list_item_checked, bag );
 
         listView.setAdapter(adapter);
@@ -88,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //getting the value from edit field
-                latestAddedBagItem = editText.getText().toString();
+                latestAddedBagItem.name = editText.getText().toString();
                 //adding the element to the list
-                bag.add(latestAddedBagItem);
+                bag.add(new Product(latestAddedBagItem.name, 0));
 
                 //set the new value in the text field
-                textView.setText(latestAddedBagItem);
+                textView.setText(latestAddedBagItem.name);
 
                 //The next line is needed in order to say to the ListView
                 //that the data has changed - we have added stuff now!
@@ -111,9 +111,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 int index = listView.getCheckedItemPosition();
-                latestRemovedBagItem = bag.get(index);
+                Product product = bag.get(index);
+                latestRemovedBagItem = product;
 
-                textRemoveView.setText(latestRemovedBagItem);
+                textRemoveView.setText(latestRemovedBagItem.name);
 
                 bag.remove(index);
 
@@ -126,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                latestAddedBagItem = "";
-                latestRemovedBagItem = "";
+                latestAddedBagItem = new Product("", 0);
+                latestRemovedBagItem = new Product("", 0);
 
-                textView.setText(latestAddedBagItem);
-                textRemoveView.setText(latestRemovedBagItem);
+                textView.setText(latestAddedBagItem.name);
+                textRemoveView.setText(latestRemovedBagItem.name);
 
                 bag.clear();
                 getMyAdapter().notifyDataSetChanged();
@@ -188,18 +189,18 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "onSaveInstanceState");
 
-        outState.putString("savedLatestBagItem", latestAddedBagItem);
-        outState.putString("savedLatestRemovedBagItem", latestRemovedBagItem);
-        outState.putStringArrayList("savedBag", bag);
+        outState.putParcelable("savedLatestBagItem", latestAddedBagItem);
+        outState.putParcelable("savedLatestRemovedBagItem", latestRemovedBagItem);
+        outState.putParcelableArrayList("savedBag", bag);
     }
 
     protected void onRestoreInstanceState(Bundle savedState){
         super.onRestoreInstanceState(savedState);
         Log.i(TAG, "onRestoreInstanceState");
 
-        this.latestAddedBagItem = savedState.getString("savedLatestBagItem");
-        this.latestRemovedBagItem = savedState.getString("savedLatestRemovedBagItem");
-        this.bag = savedState.getStringArrayList("savedBag");
+        this.latestAddedBagItem = savedState.getParcelable("savedLatestBagItem");
+        this.latestRemovedBagItem = savedState.getParcelable("savedLatestRemovedBagItem");
+        this.bag = savedState.getParcelableArrayList("savedBag");
 
     }
 
