@@ -127,31 +127,45 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                latestAddedBagItem = new Product("", 0);
-                latestRemovedBagItem = new Product("", 0);
+                ConfirmDialogFragment dialog = new ConfirmDialogFragment() {
+                    @Override
+                    protected void positiveClick() {
+                        //Here we override the methods and can now
+                        //do something
+                        latestAddedBagItem = new Product("", 0);
+                        latestRemovedBagItem = new Product("", 0);
 
-                textView.setText(latestAddedBagItem.name);
-                textRemoveView.setText(latestRemovedBagItem.name);
+                        textView.setText(latestAddedBagItem.name);
+                        textRemoveView.setText(latestRemovedBagItem.name);
 
-                bag.clear();
-                getMyAdapter().notifyDataSetChanged();
+                        bag.clear();
+                        getMyAdapter().notifyDataSetChanged();
 
+                        //make toast
+                        String message = "List Cleared";
+                        Context context = getApplicationContext();
+                        CharSequence text = message;
+                        int duration = Toast.LENGTH_SHORT;
 
-                //make toast
-                String message = "List Cleared";
-                Context context = getApplicationContext();
-                CharSequence text = message;
-                int duration = Toast.LENGTH_SHORT;
+                        Toast toast =  Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
 
-                Toast toast =  Toast.makeText(context, text, duration);
-
-                toast.setGravity(Gravity.CENTER, 0, 0);
-
-                toast.show();
-
+                    @Override
+                    protected void negativeClick() {
+                        //Here we override the method and can now do something
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "action cancelled", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                };
+                //Here we show the dialog
+                //The tag "MyFragement" is not important for us.
+                dialog.show(getFragmentManager(), "MyFragment");
             }
         });
-
     }
 
     protected void onStart() {
@@ -203,5 +217,7 @@ public class MainActivity extends AppCompatActivity {
         this.bag = savedState.getParcelableArrayList("savedBag");
 
     }
+
+
 
 }
