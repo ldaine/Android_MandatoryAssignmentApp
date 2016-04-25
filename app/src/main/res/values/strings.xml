@@ -1,10 +1,18 @@
 <resources>
     <string name="app_name">MandatoryApp</string>
     <string name="inputItem">New item</string>
-    <string name="inputAmount">Amount</string>
+    <string name="inputAmount">0</string>
     <string name="ok">Add</string>
     <string name="outputHeader">Last added: </string>
     <string name="delete">Remove</string>
     <string name="outputRemovedHeader">Last removed: </string>
     <string name="clear">Clear All</string>
+    <string-array name="measurments_array">
+        <item>pcs</item>
+        <item>g</item>
+        <item>kg</item>
+        <item>l</item>
+        <item>pack(s)</item>
+    </string-array>
+
 </resources>

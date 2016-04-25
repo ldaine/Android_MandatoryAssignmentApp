@@ -9,15 +9,17 @@ import android.os.Parcelable;
 public class Product implements Parcelable {
     String name;
     int quantity;
+    String measurment;
 
-    public Product(String name, int quantity){
+    public Product(String name, int quantity, String measurment){
         this.name = name;
         this.quantity = quantity;
+        this.measurment = measurment;
     }
 
     @Override
     public String toString() {
-        return this.name + ", " + this.quantity;
+        return this.name + ", " + this.quantity + " " + this.measurment;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeInt(quantity);
+        dest.writeString(measurment);
     }
 
     // Creator

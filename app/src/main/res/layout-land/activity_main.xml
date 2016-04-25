@@ -75,11 +75,16 @@
         <EditText
             android:id="@+id/inputAmount"
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="@string/inputAmount"
             android:inputType="number"
             />
+
+        <Spinner
+            android:id="@+id/spinnerAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/inputButton"

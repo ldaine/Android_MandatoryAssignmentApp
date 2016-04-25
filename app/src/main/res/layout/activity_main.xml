@@ -64,7 +64,7 @@
         <EditText
             android:id="@+id/inputItem"
             android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:hint="@string/inputItem"
             />
@@ -76,6 +76,10 @@
             android:hint="@string/inputAmount"
             android:inputType="number"
             />
+        <Spinner
+            android:id="@+id/spinnerAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
     <LinearLayout

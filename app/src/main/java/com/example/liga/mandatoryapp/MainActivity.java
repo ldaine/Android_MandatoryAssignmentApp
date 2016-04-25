@@ -12,6 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import android.widget.Button;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -21,17 +22,17 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "ActivityLifeCycle";
 
     //Properties
-    ArrayAdapter<Product> adapter;
+    ArrayAdapter<Product> adapterProduct;
     ListView listView;
     ArrayList<Product> bag = new ArrayList<Product>();
 
-    Product latestAddedBagItem = new Product("", 0);
-    Product latestRemovedBagItem = new Product("", 0);
+    Product latestAddedBagItem = new Product("", 0, "");
+    Product latestRemovedBagItem = new Product("", 0, "");
 
     //methods
     public ArrayAdapter getMyAdapter()
     {
-        return adapter;
+        return adapterProduct;
     }
 
     //method owerride
@@ -69,19 +70,24 @@ public class MainActivity extends AppCompatActivity {
         final TextView textView = (TextView) findViewById(R.id.outputText);
         final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
         final ListView listView = (ListView) findViewById(R.id.list);
+        final Spinner spinner = (Spinner) findViewById(R.id.spinnerAmount);
+
+        ArrayAdapter<CharSequence> adapterSpinnerAmount = ArrayAdapter.createFromResource(this,
+                R.array.measurments_array,
+                android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapterSpinnerAmount);
 
         //adding values to view
-        textView.setText(latestAddedBagItem.name);
-        textRemoveView.setText(latestRemovedBagItem.name);
+        textView.setText(latestAddedBagItem.toString());
+        textRemoveView.setText(latestRemovedBagItem.toString());
 
-        adapter =  new ArrayAdapter<Product>(this,
+        adapterProduct =  new ArrayAdapter<Product>(this,
                 android.R.layout.simple_list_item_checked, bag );
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapterProduct);
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-
 
         //setting listener functions
         inputButton.setOnClickListener(new View.OnClickListener() {
@@ -90,12 +96,26 @@ public class MainActivity extends AppCompatActivity {
 
                 //getting the value from edit field
                 latestAddedBagItem.name = editItem.getText().toString();
-                int productAmount = Integer.parseInt(editAmount.getText().toString());
+
+
+                try {
+                    latestAddedBagItem.quantity = Integer.parseInt(editAmount.getText().toString());
+                    Log.d("DEBUG editAmount ", editAmount.getText().toString());
+                } catch (NumberFormatException e) {
+                    latestAddedBagItem.quantity = 0;
+                    Log.d("DEBUG editAmount: ", "not a number");
+                }
+
+                if(spinner.getSelectedItemPosition() == 0){
+                    latestAddedBagItem.measurment = "pcs";
+                } else {
+                    latestAddedBagItem.measurment = (String) spinner.getSelectedItem();
+                }
                 //adding the element to the list
-                bag.add(new Product(latestAddedBagItem.name, productAmount));
+                bag.add(new Product(latestAddedBagItem.name, latestAddedBagItem.quantity, latestAddedBagItem.measurment));
 
                 //set the new value in the text field
-                textView.setText(latestAddedBagItem.name);
+                textView.setText(latestAddedBagItem.toString());
 
                 //The next line is needed in order to say to the ListView
                 //that the data has changed - we have added stuff now!
@@ -103,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                 editItem.setText("");
                 editAmount.setText("");
+                spinner.setSelection(0);
             }
         });
 
@@ -132,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
                     protected void positiveClick() {
                         //Here we override the methods and can now
                         //do something
-                        latestAddedBagItem = new Product("", 0);
-                        latestRemovedBagItem = new Product("", 0);
+                        latestAddedBagItem = new Product("", 0, "");
+                        latestRemovedBagItem = new Product("", 0, "");
 
                         textView.setText(latestAddedBagItem.name);
                         textRemoveView.setText(latestRemovedBagItem.name);
