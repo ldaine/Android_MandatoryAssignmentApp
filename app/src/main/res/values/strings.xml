@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MandatoryApp</string>
-    <string name="inputText">New item</string>
+    <string name="inputItem">New item</string>
+    <string name="inputAmount">Amount</string>
     <string name="ok">Add</string>
     <string name="outputHeader">Last added: </string>
     <string name="delete">Remove</string>

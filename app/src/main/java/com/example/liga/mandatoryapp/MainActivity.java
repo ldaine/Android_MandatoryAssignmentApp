@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         final Button inputButton = (Button) findViewById(R.id.inputButton);
         final Button deleteButton = (Button) findViewById(R.id.deleteButton);
         final Button clearButton = (Button) findViewById(R.id.clearButton);
-        final EditText editText = (EditText) findViewById(R.id.inputText);
+        final EditText editItem = (EditText) findViewById(R.id.inputItem);
+        final EditText editAmount = (EditText) findViewById(R.id.inputAmount);
         final TextView textView = (TextView) findViewById(R.id.outputText);
         final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
         final ListView listView = (ListView) findViewById(R.id.list);
@@ -88,9 +89,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //getting the value from edit field
-                latestAddedBagItem.name = editText.getText().toString();
+                latestAddedBagItem.name = editItem.getText().toString();
+                int productAmount = Integer.parseInt(editAmount.getText().toString());
                 //adding the element to the list
-                bag.add(new Product(latestAddedBagItem.name, 0));
+                bag.add(new Product(latestAddedBagItem.name, productAmount));
 
                 //set the new value in the text field
                 textView.setText(latestAddedBagItem.name);
@@ -99,10 +101,8 @@ public class MainActivity extends AppCompatActivity {
                 //that the data has changed - we have added stuff now!
                 getMyAdapter().notifyDataSetChanged();
 
-                editText.setText("");
-
-
-
+                editItem.setText("");
+                editAmount.setText("");
             }
         });
 

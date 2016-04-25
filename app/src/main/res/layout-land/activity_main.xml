@@ -66,18 +66,26 @@
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/inputText"
+            android:id="@+id/inputItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:hint="@string/inputText"
+            android:layout_weight="4"
+            android:hint="@string/inputItem"
+            />
+        <EditText
+            android:id="@+id/inputAmount"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:hint="@string/inputAmount"
+            android:inputType="number"
             />
 
         <Button
             android:id="@+id/inputButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/ok"
             />
 
@@ -85,7 +93,7 @@
             android:id="@+id/deleteButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/delete"
             />
         <Button

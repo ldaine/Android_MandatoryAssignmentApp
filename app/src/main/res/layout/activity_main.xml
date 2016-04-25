@@ -54,13 +54,30 @@
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/inputText"
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/inputText"
-        />
+        android:orientation="horizontal" >
 
+        <EditText
+            android:id="@+id/inputItem"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="@string/inputItem"
+            />
+        <EditText
+            android:id="@+id/inputAmount"
+            android:layout_width="match_parent"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:hint="@string/inputAmount"
+            android:inputType="number"
+            />
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
