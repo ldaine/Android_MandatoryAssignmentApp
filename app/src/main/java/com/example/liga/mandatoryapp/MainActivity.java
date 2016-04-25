@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     Product latestAddedBagItem = new Product("", 0, "");
     Product latestRemovedBagItem = new Product("", 0, "");
+    int latestRemovedBagItemPosition;
+
 
     //methods
     public ArrayAdapter getMyAdapter()
@@ -117,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 //set the new value in the text field
                 textView.setText(latestAddedBagItem.toString());
 
+
+
                 //The next line is needed in order to say to the ListView
                 //that the data has changed - we have added stuff now!
                 getMyAdapter().notifyDataSetChanged();
@@ -131,15 +136,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                int index = listView.getCheckedItemPosition();
-                Product product = bag.get(index);
-                latestRemovedBagItem = product;
+                final View parent = listView;
+                Snackbar snackbar = Snackbar
+                        .make(parent, "Item is deleted", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                bag.add(latestRemovedBagItemPosition,latestRemovedBagItem);
+                                getMyAdapter().notifyDataSetChanged();
+                                Snackbar snackbar = Snackbar.make(parent, "Item restored!", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                            }
+                        });
+
+                latestRemovedBagItemPosition = listView.getCheckedItemPosition();
+                latestRemovedBagItem = bag.get(latestRemovedBagItemPosition); //save a copy of the deleted item
+
+                bag.remove(latestRemovedBagItemPosition); //remove item
 
                 textRemoveView.setText(latestRemovedBagItem.name);
 
-                bag.remove(index);
+                getMyAdapter().notifyDataSetChanged(); //notify view
 
-                getMyAdapter().notifyDataSetChanged();
+                snackbar.show();
 
             }
         });
