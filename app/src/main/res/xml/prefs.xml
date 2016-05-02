@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="email"
+        android:summary="Your email address"
+        android:title="Email" />
+
+    <ListPreference
+        android:entries="@array/gender_type"
+        android:entryValues="@array/gender_values"
+        android:key="gender"
+        android:summary="Select your gender"
+        android:title="Gender" />
+
+    <CheckBoxPreference
+        android:key="sound"
+        android:summary="Do you want to enable sound?"
+        android:title="Enable Sound?" />
+</PreferenceScreen>
+

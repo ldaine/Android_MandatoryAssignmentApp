@@ -1,18 +1,35 @@
 <resources>
     <string name="app_name">MandatoryApp</string>
+    <string name="button_help">Help</string>
+    <string name="button_about">About</string>
+    <string name="button_refresh">Refresh</string>
+    <string name="button_clear">Clear List</string>
+    <string name="button_add">Add</string>
+    <string name="button_remove">Remove</string>
     <string name="inputItem">New item</string>
     <string name="inputAmount">0</string>
-    <string name="ok">Add</string>
+
+    <string name="confirm_delete_heading">Confirmation</string>
+    <string name="confirm_delete_message">Are you sure, you want to remove all products?</string>
+    <string name="confirm_delete_btn_yes">Yes</string>
+    <string name="confirm_delete_btn_no">No</string>
+
     <string name="outputHeader">Last added: </string>
-    <string name="delete">Remove</string>
     <string name="outputRemovedHeader">Last removed: </string>
-    <string name="clear">Clear All</string>
     <string-array name="measurments_array">
         <item>pcs</item>
         <item>g</item>
         <item>kg</item>
         <item>l</item>
         <item>pack(s)</item>
+    </string-array>
+    <string-array name="gender_values">
+        <item>male</item>
+        <item>female</item>
+    </string-array>
+    <string-array name="gender_type">
+        <item>Male</item>
+        <item>Female</item>
     </string-array>
 
 </resources>

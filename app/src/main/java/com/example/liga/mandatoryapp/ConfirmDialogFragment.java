@@ -19,13 +19,18 @@ public class ConfirmDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        Bundle bundle = this.getArguments();
+        String title = bundle.getString("title");
+        String message = bundle.getString("message");
+        String confirm = bundle.getString("confirm");
+        String reject = bundle.getString("reject");
+
         //Here we create a new dialogbuilder;
-        AlertDialog.Builder alert = new AlertDialog.Builder(
-                getActivity());
-        alert.setTitle("Confirmation");
-        alert.setMessage("Are you sure?");
-        alert.setPositiveButton("Yes", pListener);
-        alert.setNegativeButton("No", nListener);
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(title);
+        alert.setMessage(message);
+        alert.setPositiveButton(confirm, pListener);
+        alert.setNegativeButton(reject, nListener);
 
         return alert.create();
     }
