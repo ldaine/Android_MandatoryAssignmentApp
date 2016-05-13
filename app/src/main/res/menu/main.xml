@@ -4,22 +4,32 @@
         android:id="@+id/item_help"
         android:icon="@android:drawable/ic_menu_help"
         android:orderInCategory="1"
+        android:showAsAction="ifRoom"
         android:title="@string/button_help"/>
 
     <item
         android:id="@+id/item_refresh"
         android:orderInCategory="3"
+        android:showAsAction="ifRoom"
         android:title="@string/button_refresh"/>
 
     <item
         android:id="@+id/item_about"
         android:icon="@android:drawable/ic_menu_info_details"
         android:orderInCategory="2"
+        android:showAsAction="ifRoom"
         android:title="@string/button_about"/>
 
     <item
         android:id="@+id/item_delete"
         android:icon="@drawable/ic_delete_forever_dark"
-        android:orderInCategory="4"
+        android:orderInCategory="5"
+        android:showAsAction="ifRoom"
         android:title="@string/button_clear"/>
+    <item
+        android:id="@+id/item_settings"
+        android:icon="@drawable/ic_delete_forever_dark"
+        android:orderInCategory="4"
+        android:showAsAction="ifRoom"
+        android:title="@string/button_settings"/>
 </menu>

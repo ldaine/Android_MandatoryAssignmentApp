@@ -16,6 +16,7 @@
 
     <string name="outputHeader">Last added: </string>
     <string name="outputRemovedHeader">Last removed: </string>
+    <string name="button_settings">Settings</string>
     <string-array name="measurments_array">
         <item>pcs</item>
         <item>g</item>
@@ -31,5 +32,8 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string name="title_activity_shopping_list_overview">Your Lists</string>
+    <string name="title_activity_main_activity">Main Activity</string>
+    <string name="inputListName">List Name</string>
 
 </resources>

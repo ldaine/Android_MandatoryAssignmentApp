@@ -3,6 +3,8 @@ package com.example.liga.mandatoryapp;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("greetingBundle");
+        String greeting = intent.getStringExtra("message");
+        int position = intent.getIntExtra("shoppingListCheckedItemPosition", 10);
+
+
         //getActionBar().setHomeButtonEnabled(true); //this means we can click "home"
 
         Log.d(TAG, "onCreate() called");
@@ -56,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             Product product = savedInstanceState.getParcelable("savedLatestBagItem");
             Product removedItemProduct = savedInstanceState.getParcelable("savedLatestRemovedBagItem");
             assert product != null;
-            Log.d("DEBUG", product.name);
+            Log.d("DEBUG", product.getName());
             latestAddedBagItem = product;
 
             if (removedItemProduct != null) {
@@ -79,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
         final ListView listView = (ListView) findViewById(R.id.list);
         final Spinner spinner = (Spinner) findViewById(R.id.spinnerAmount);
+        final TextView testingView = (TextView) findViewById(R.id.testing);
 
+        testingView.setText(String.valueOf(position));
         ArrayAdapter<CharSequence> adapterSpinnerAmount = ArrayAdapter.createFromResource(this,
                 R.array.measurments_array,
                 android.R.layout.simple_spinner_dropdown_item);
@@ -109,25 +119,25 @@ public class MainActivity extends AppCompatActivity {
 
                 //getting the value from edit field
                 assert editItem != null;
-                latestAddedBagItem.name = editItem.getText().toString();
+                latestAddedBagItem.setName(editItem.getText().toString());
 
 
                 try {
                     assert editAmount != null;
-                    latestAddedBagItem.quantity = Integer.parseInt(editAmount.getText().toString());
+                    latestAddedBagItem.setQuantity(Integer.parseInt(editAmount.getText().toString()));
                     Log.d("DEBUG editAmount ", editAmount.getText().toString());
                 } catch (NumberFormatException e) {
-                    latestAddedBagItem.quantity = 0;
+                    latestAddedBagItem.setQuantity(0);
                     Log.d("DEBUG editAmount: ", "not a number");
                 }
 
                 if (spinner.getSelectedItemPosition() == 0) {
-                    latestAddedBagItem.measurment = "pcs";
+                    latestAddedBagItem.setMeasurment("pcs");
                 } else {
-                    latestAddedBagItem.measurment = (String) spinner.getSelectedItem();
+                    latestAddedBagItem.setMeasurment((String) spinner.getSelectedItem());
                 }
                 //adding the element to the list
-                bag.add(new Product(latestAddedBagItem.name, latestAddedBagItem.quantity, latestAddedBagItem.measurment));
+                bag.add(new Product(latestAddedBagItem.getName(), latestAddedBagItem.getQuantity(), latestAddedBagItem.getMeasurment()));
 
                 //set the new value in the text field
                 textView.setText(latestAddedBagItem.toString());
@@ -166,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
                 bag.remove(latestRemovedBagItemPosition); //remove item
 
-                textRemoveView.setText(latestRemovedBagItem.name);
+                textRemoveView.setText(latestRemovedBagItem.getName());
 
                 getMyAdapter().notifyDataSetChanged(); //notify view
 
@@ -201,9 +211,6 @@ public class MainActivity extends AppCompatActivity {
     //it is in the actionbar or in the overflow menu.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
-
         switch (item.getItemId()) {
 
             case android.R.id.home:
@@ -227,11 +234,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Refresh item clicked!", Toast.LENGTH_SHORT)
                         .show();
                 return true;
+
+            case R.id.item_settings:
+                Toast.makeText(this, "Setting clicked!", Toast.LENGTH_SHORT)
+                        .show();
+                return true;
         }
 
         return false; //we did not handle the event
     }
-
 
     protected void onStart() {
         super.onStart();
@@ -298,9 +309,9 @@ public class MainActivity extends AppCompatActivity {
                 latestRemovedBagItem = new Product("", 0, "");
 
                 assert textView != null;
-                textView.setText(latestAddedBagItem.name);
+                textView.setText(latestAddedBagItem.getName());
                 assert textRemoveView != null;
-                textRemoveView.setText(latestRemovedBagItem.name);
+                textRemoveView.setText(latestRemovedBagItem.getName());
 
                 bag.clear();
                 getMyAdapter().notifyDataSetChanged();
@@ -332,14 +343,11 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("confirm", getResources().getString(R.string.confirm_delete_btn_yes));
         bundle.putString("reject", getResources().getString(R.string.confirm_delete_btn_no));
         dialog.setArguments(bundle);
-
-
         //Here we show the dialog
         //The tag "MyFragement" is not important for us.
         dialog.show(getFragmentManager(), "MyFragment");
-
     }
-
-
-
 }
+
+//02-05-2016
+///MAKING THE SET PREFERENCES WORK...
