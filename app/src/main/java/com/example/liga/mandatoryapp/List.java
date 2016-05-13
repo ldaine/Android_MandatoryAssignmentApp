@@ -26,6 +26,9 @@ public class List implements Parcelable {
     public void setName(String name){
         this.name = name;
     }
+    public void setDate(Date date){
+        this.date = date;
+    }
 
     public void addProduct(Product product){
         this.products.add(product);
@@ -35,8 +38,8 @@ public class List implements Parcelable {
         return this.name;
     }
 
-    public String getDate(){
-        return this.date.toString();
+    public Date getDate(){
+        return this.date;
     }
 
     public ArrayList<Product> getProducts(){

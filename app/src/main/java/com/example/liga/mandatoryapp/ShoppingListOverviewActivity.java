@@ -155,13 +155,14 @@ public class ShoppingListOverviewActivity extends AppCompatActivity {
 
         listRef = new Firebase("https://shoppingappbaaa2016.firebaseio.com/shoppingList");
 
-        //FirebaseListAdapter<List> shoppinglistFirebaseAdapter = new FirebaseListAdapter<List>(this, List.class, R.id.shoppingListArrayView, listRef) {
-        //    @Override
-        //    protected void populateView(View view, List list, int i) {
-        //        TextView textView = (TextView) view.findViewById(android.R.id.text1);
-        //        textView.setText(list.toString());
-        //    }
-        //};
+        FirebaseListAdapter<List> shoppinglistFirebaseAdapter = new FirebaseListAdapter<List>(this, List.class, android.R.layout.two_line_list_item, listRef) {
+            @Override
+            protected void populateView(View view, List list, int i) {
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                textView.setText(list.toString());
+            }
+        };
+        ShoppingListView.setAdapter(shoppinglistFirebaseAdapter);
     }
 
     protected void onSaveInstanceState(Bundle outState) {
