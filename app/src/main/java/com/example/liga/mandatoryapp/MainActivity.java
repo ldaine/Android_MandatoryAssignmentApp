@@ -52,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("greetingBundle");
         String greeting = intent.getStringExtra("message");
-        int position = intent.getIntExtra("shoppingListCheckedItemPosition", 10);
+        String name = intent.getStringExtra("name");
+        String position = intent.getStringExtra("position");
+        String id = intent.getStringExtra("id");
+
+        position = "p: " + position + ", id: " + id + ", n: " + name;
 
 
         //getActionBar().setHomeButtonEnabled(true); //this means we can click "home"

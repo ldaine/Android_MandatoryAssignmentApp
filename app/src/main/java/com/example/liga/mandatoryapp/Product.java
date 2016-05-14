@@ -42,7 +42,10 @@ public class Product implements Parcelable {
 
     @Override
     public String toString() {
-        return this.name + ", " + this.quantity + " " + this.measurment;
+        if(this.name != null){
+            return this.name + ", " + this.quantity + " " + this.measurment;
+        }
+        return "Error";
     }
 
     @Override

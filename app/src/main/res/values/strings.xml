@@ -35,5 +35,6 @@
     <string name="title_activity_shopping_list_overview">Your Lists</string>
     <string name="title_activity_main_activity">Main Activity</string>
     <string name="inputListName">List Name</string>
+    <string name="title_activity_shopping_list">List Details</string>
 
 </resources>

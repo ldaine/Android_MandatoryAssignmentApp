@@ -5,22 +5,25 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Liga on 12-05-2016.
  */
-public class List implements Parcelable {
+public class ShoppingList implements Parcelable {
     private String name;
     private Date date = new Date();
-    private ArrayList<Product> products;
+    private Map<String, Product> products;
     //constructors
-    public List(){
+    public ShoppingList(){
     }
 
-    public List(String name, ArrayList<Product> products){
+    public ShoppingList(String name){
         this.name = name;
-        this.products = products;
-    }
+        this.products = new HashMap<String, Product>();
+    };
 
     //interface methods
     public void setName(String name){
@@ -30,8 +33,14 @@ public class List implements Parcelable {
         this.date = date;
     }
 
-    public void addProduct(Product product){
-        this.products.add(product);
+    public void addProduct(String name, Product product){
+
+        this.products.put(name, product);
+    }
+
+    public void setProducts(Map<String, Product> products){
+
+        this.products = products;
     }
 
     public String getName(){
@@ -42,7 +51,7 @@ public class List implements Parcelable {
         return this.date;
     }
 
-    public ArrayList<Product> getProducts(){
+    public Map<String, Product> getProducts(){
         return this.products;
     }
 
@@ -50,7 +59,12 @@ public class List implements Parcelable {
     //for lists
     @Override
     public String toString() {
-        return this.name  + " [" + this.products.size() + "]";
+        if(this.name != null && this.products != null){
+            return this.name + " (" + String.valueOf(this.products.size()) + ")";
+        } else if (this.name != null) {
+            return this.name + " (0)";
+        }
+        return "Error";
     }
 
     //for orientation change
@@ -62,7 +76,7 @@ public class List implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeList(products);
+        //dest.writeList(products);
     }
 
     // Creator
@@ -72,16 +86,16 @@ public class List implements Parcelable {
             return new Product(in);
         }
 
-        public List[] newArray(int size) {
-            return new List[size];
+        public ShoppingList[] newArray(int size) {
+            return new ShoppingList[size];
         }
     };
 
     // "De-parcel object
-    public List(Parcel in) {
+    public ShoppingList(Parcel in) {
         name = in.readString();
 
-        products = new ArrayList<Product>();
-        products = in.readArrayList(Product.class.getClassLoader());
+        //products = new ArrayList<Product>();
+        //products = in.readArrayList(Product.class.getClassLoader());
     }
 }
