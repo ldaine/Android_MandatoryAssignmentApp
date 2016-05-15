@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 callCofirmDeleteList();
             }
         });
@@ -233,12 +232,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.item_help:
                 Toast.makeText(this, "Help item clicked!", Toast.LENGTH_SHORT)
                         .show();
-                return true;
-            case R.id.item_refresh:
-                Toast.makeText(this, "Refresh item clicked!", Toast.LENGTH_SHORT)
-                        .show();
-                return true;
-
             case R.id.item_settings:
                 Toast.makeText(this, "Setting clicked!", Toast.LENGTH_SHORT)
                         .show();

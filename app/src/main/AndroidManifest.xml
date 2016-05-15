@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.liga.mandatoryapp" >
+    package="com.example.liga.mandatoryapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,7 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -23,12 +23,8 @@
 
         <!-- Activities -->
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main_activity" >
-        </activity>
-        <activity
             android:name=".ShoppingListOverviewActivity"
-            android:label="@string/title_activity_shopping_list_overview" >
+            android:label="@string/title_activity_shopping_list_overview">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,8 +33,10 @@
         </activity>
         <activity
             android:name=".ShoppingListActivity"
-            android:label="@string/title_activity_shopping_list" >
-        </activity>
+            android:label="@string/title_activity_shopping_list"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

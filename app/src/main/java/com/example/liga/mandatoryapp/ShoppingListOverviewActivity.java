@@ -29,6 +29,7 @@ public class ShoppingListOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list_overview);
+
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
@@ -103,17 +104,6 @@ public class ShoppingListOverviewActivity extends AppCompatActivity {
                 }
             });
         */
-    }
-
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //outState.putParcelableArrayList("savedShoppingListArray", shoppingListArray);
-    }
-
-    protected void onRestoreInstanceState(Bundle savedState) {
-        super.onRestoreInstanceState(savedState);
-        //this.shoppingListArray = savedState.getParcelableArrayList("savedShoppingListArray");
-
     }
 
 }
