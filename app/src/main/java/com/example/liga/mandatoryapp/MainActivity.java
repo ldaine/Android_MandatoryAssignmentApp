@@ -1,47 +1,37 @@
 package com.example.liga.mandatoryapp;
 
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
+import android.renderscript.Script;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.ListView;
-import java.util.ArrayList;
-import android.widget.Button;
 import android.view.View;
-import android.widget.Spinner;
-import android.widget.Toast;
-import android.support.design.widget.Snackbar;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.firebase.client.Firebase;
+
+import com.firebase.ui.FirebaseListAdapter;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    //fields
-    private final String TAG = "ActivityLifeCycle";
+    //properties
+    private String userId;
+    private String shoppingListUrl;
 
-    //Properties
-    ArrayAdapter<Product> adapterProduct;
-    ListView listView;
-    ArrayList<Product> bag = new ArrayList<Product>();
+    //there is no need for array list and array list adapter. The firebase UI is handling everything for us.
+    private Firebase mRef = new Firebase(Constants.FIREBASE_URL);
+    private Firebase listRef;
+    FirebaseListAdapter<ShoppingList> shoppinglistFirebaseAdapter;
 
-    Product latestAddedBagItem = new Product("", 0, "");
-    Product latestRemovedBagItem = new Product("", 0, "");
-    int latestRemovedBagItemPosition;
-
-    //methods
-    public ArrayAdapter getMyAdapter() {
-        return adapterProduct;
-    }
-
-
+    EditText inputShoppingListName;
+    Button buttonShoppingListAdd;
+    ListView listShoppingListView;
 
     //method owerride
     @Override
@@ -49,154 +39,84 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getBundleExtra("greetingBundle");
-        String greeting = intent.getStringExtra("message");
-        String name = intent.getStringExtra("name");
-        String position = intent.getStringExtra("position");
-        String id = intent.getStringExtra("id");
-
-        position = "p: " + position + ", id: " + id + ", n: " + name;
-
-
-        //getActionBar().setHomeButtonEnabled(true); //this means we can click "home"
-
-        Log.d(TAG, "onCreate() called");
-
-        if (savedInstanceState != null) {
-
-            Product product = savedInstanceState.getParcelable("savedLatestBagItem");
-            Product removedItemProduct = savedInstanceState.getParcelable("savedLatestRemovedBagItem");
-            assert product != null;
-            Log.d("DEBUG", product.getName());
-            latestAddedBagItem = product;
-
-            if (removedItemProduct != null) {
-                latestRemovedBagItem = removedItemProduct;
-            }
-
-            ArrayList list = savedInstanceState.getParcelableArrayList("savedBag");
-            if (list != null) {
-                bag = list;
-            }
+        //Authentication based on tutorial
+        //Credit: http://www.sitepoint.com/creating-a-cloud-backend-for-your-android-app-using-firebase/
+        if (mRef.getAuth() == null) {
+            loadLoginView();
         }
 
-        //getting view elements
-        final Button inputButton = (Button) findViewById(R.id.inputButton);
-        final Button deleteButton = (Button) findViewById(R.id.deleteButton);
-        final ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
-        final EditText editItem = (EditText) findViewById(R.id.inputItem);
-        final EditText editAmount = (EditText) findViewById(R.id.inputAmount);
-        final TextView textView = (TextView) findViewById(R.id.outputText);
-        final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
-        final ListView listView = (ListView) findViewById(R.id.list);
-        final Spinner spinner = (Spinner) findViewById(R.id.spinnerAmount);
-        final TextView testingView = (TextView) findViewById(R.id.testing);
 
-        testingView.setText(String.valueOf(position));
-        ArrayAdapter<CharSequence> adapterSpinnerAmount = ArrayAdapter.createFromResource(this,
-                R.array.measurments_array,
-                android.R.layout.simple_spinner_dropdown_item);
+        //trying to get the userId
+        try {
+            userId = mRef.getAuth().getUid();
+        } catch (Exception e) {
+            loadLoginView();
+        }
 
-        assert spinner != null;
-        spinner.setAdapter(adapterSpinnerAmount);
+        /*set bindings*/
+        inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
+        buttonShoppingListAdd = (Button) findViewById(R.id.buttonShoppingListAdd);
+        listShoppingListView = (ListView) findViewById(R.id.listShoppingList);
 
-        //adding values to view
-        assert textView != null;
-        textView.setText(latestAddedBagItem.toString());
-        assert textRemoveView != null;
-        textRemoveView.setText(latestRemovedBagItem.toString());
+        shoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists";
+        listRef = new Firebase(shoppingListUrl);
 
-        adapterProduct = new ArrayAdapter<Product>(this,
-                android.R.layout.simple_list_item_checked, bag);
+        shoppinglistFirebaseAdapter = new FirebaseListAdapter<ShoppingList>(this, ShoppingList.class, android.R.layout.two_line_list_item, listRef) {
+            @Override
+            protected void populateView(View view, ShoppingList list, int i) {
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                textView.setText(list.toString());
+            }
+        };
 
-        assert listView != null;
-        listView.setAdapter(adapterProduct);
+        listShoppingListView.setAdapter(shoppinglistFirebaseAdapter);
 
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listShoppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String key = shoppinglistFirebaseAdapter.getRef(position).getKey();
+                //Log.i("position", String.value);
+                Intent intent = new Intent(MainActivity.this, ShoppingListActivity.class);
+                intent.putExtra("key", key);
+
+                startActivity(intent);
+            }
+        });
 
         //setting listener functions
-        assert inputButton != null;
-        inputButton.setOnClickListener(new View.OnClickListener() {
+        assert buttonShoppingListAdd != null;
+        buttonShoppingListAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //getting the value from edit field
-                assert editItem != null;
-                latestAddedBagItem.setName(editItem.getText().toString());
+                assert inputShoppingListName != null;
+                String listName = inputShoppingListName.getText().toString();
 
+                //creating new list item
+                ShoppingList listItem = new ShoppingList(listName);
 
-                try {
-                    assert editAmount != null;
-                    latestAddedBagItem.setQuantity(Integer.parseInt(editAmount.getText().toString()));
-                    Log.d("DEBUG editAmount ", editAmount.getText().toString());
-                } catch (NumberFormatException e) {
-                    latestAddedBagItem.setQuantity(0);
-                    Log.d("DEBUG editAmount: ", "not a number");
+                //pushing the new list to firebase
+                listRef.push().setValue(listItem);
+
+                //reset the input field
+                inputShoppingListName.setText("");
+            }
+        });
+
+        /*
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
-
-                if (spinner.getSelectedItemPosition() == 0) {
-                    latestAddedBagItem.setMeasurment("pcs");
-                } else {
-                    latestAddedBagItem.setMeasurment((String) spinner.getSelectedItem());
-                }
-                //adding the element to the list
-                bag.add(new Product(latestAddedBagItem.getName(), latestAddedBagItem.getQuantity(), latestAddedBagItem.getMeasurment()));
-
-                //set the new value in the text field
-                textView.setText(latestAddedBagItem.toString());
-
-
-                //The next line is needed in order to say to the ListView
-                //that the data has changed - we have added stuff now!
-                getMyAdapter().notifyDataSetChanged();
-
-                editItem.setText("");
-                editAmount.setText("");
-                spinner.setSelection(0);
-            }
-        });
-
-        assert deleteButton != null;
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Snackbar snackbar = Snackbar
-                        .make(listView, "Item is deleted", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                                bag.add(latestRemovedBagItemPosition, latestRemovedBagItem);
-                                getMyAdapter().notifyDataSetChanged();
-                                Snackbar snackbar = Snackbar.make(listView, "Item restored!", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        });
-
-                latestRemovedBagItemPosition = listView.getCheckedItemPosition();
-                latestRemovedBagItem = bag.get(latestRemovedBagItemPosition); //save a copy of the deleted item
-
-                bag.remove(latestRemovedBagItemPosition); //remove item
-
-                textRemoveView.setText(latestRemovedBagItem.getName());
-
-                getMyAdapter().notifyDataSetChanged(); //notify view
-
-                snackbar.show();
-
-            }
-        });
-
-        assert clearButton != null;
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callCofirmDeleteList();
-            }
-        });
+            });
+        */
     }
+
 
 
     @Override
@@ -208,143 +128,34 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
     //Here we put the code for what should happen in the app once
     //the user selects one of our menu items (regardless of whether
     //it is in the actionbar or in the overflow menu.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case android.R.id.home:
-                Toast.makeText(this, "Application icon clicked!",
-                        Toast.LENGTH_SHORT).show();
-                return true; //return true, means we have handled the event
-            case R.id.item_about:
-                Toast.makeText(this, "About item clicked!", Toast.LENGTH_SHORT)
-                        .show();
-                return true;
-            case R.id.item_delete:
-
-                callCofirmDeleteList();
-
-                return true;
-            case R.id.item_help:
-                Toast.makeText(this, "Help item clicked!", Toast.LENGTH_SHORT)
-                        .show();
             case R.id.item_settings:
-                Toast.makeText(this, "Setting clicked!", Toast.LENGTH_SHORT)
-                        .show();
+                //Here we create a new activity and we instruct the
+                //Android system to start it
+                Intent intent = new Intent(this, SettingsActivity.class);
+
+                //we can use this, if we need to know when the user exists our preference screens
+                startActivityForResult(intent, 1);
+                return true;
+            case R.id.item_logout:
+                mRef.unauth();
+                loadLoginView();
                 return true;
         }
 
         return false; //we did not handle the event
     }
 
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart");
-
+    private void loadLoginView() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume");
-    }
-
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause");
-    }
-
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop");
-    }
-
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "onRestart");
-    }
-
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy");
-    }
-
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Log.i(TAG, "onSaveInstanceState");
-
-        outState.putParcelable("savedLatestBagItem", latestAddedBagItem);
-        outState.putParcelable("savedLatestRemovedBagItem", latestRemovedBagItem);
-        outState.putParcelableArrayList("savedBag", bag);
-    }
-
-    protected void onRestoreInstanceState(Bundle savedState) {
-        super.onRestoreInstanceState(savedState);
-        Log.i(TAG, "onRestoreInstanceState");
-
-        this.latestAddedBagItem = savedState.getParcelable("savedLatestBagItem");
-        this.latestRemovedBagItem = savedState.getParcelable("savedLatestRemovedBagItem");
-        this.bag = savedState.getParcelableArrayList("savedBag");
-
-    }
-
-    //function to call the Confirmation Fragment
-    protected void callCofirmDeleteList(){
-        final TextView textView = (TextView) findViewById(R.id.outputText);
-        final TextView textRemoveView = (TextView) findViewById(R.id.outputRemovedText);
-
-        ConfirmDialogFragment dialog = new ConfirmDialogFragment() {
-            @Override
-            protected void positiveClick() {
-                //Here we override the methods and can now
-                //do something
-                latestAddedBagItem = new Product("", 0, "");
-                latestRemovedBagItem = new Product("", 0, "");
-
-                assert textView != null;
-                textView.setText(latestAddedBagItem.getName());
-                assert textRemoveView != null;
-                textRemoveView.setText(latestRemovedBagItem.getName());
-
-                bag.clear();
-                getMyAdapter().notifyDataSetChanged();
-
-                //make toast
-                String message = "List Cleared";
-                Context context = getApplicationContext();
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, message, duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-
-            @Override
-            protected void negativeClick() {
-                //Here we override the method and can now do something
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "action cancelled", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-        };
-
-        //set the confirm window message text
-        Bundle bundle = new Bundle();
-        bundle.putString("title", getResources().getString(R.string.confirm_delete_heading));
-        bundle.putString("message", getResources().getString(R.string.confirm_delete_message));
-        bundle.putString("confirm", getResources().getString(R.string.confirm_delete_btn_yes));
-        bundle.putString("reject", getResources().getString(R.string.confirm_delete_btn_no));
-        dialog.setArguments(bundle);
-        //Here we show the dialog
-        //The tag "MyFragement" is not important for us.
-        dialog.show(getFragmentManager(), "MyFragment");
-    }
 }
-
-//02-05-2016
-///MAKING THE SET PREFERENCES WORK...

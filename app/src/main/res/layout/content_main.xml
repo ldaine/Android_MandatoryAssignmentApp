@@ -10,8 +10,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.liga.mandatoryapp.ShoppingListOverviewActivity"
-    tools:showIn="@layout/activity_shopping_list_overview">
+    tools:context="com.example.liga.mandatoryapp.MainActivity"
+    tools:showIn="@layout/activity_main">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,14 +19,14 @@
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/inputNewList"
+            android:id="@+id/inputShoppingListName"
             android:layout_width="match_parent"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:hint="@string/inputListName"
+            android:hint="@string/input_list_name"
             />
         <Button
-            android:id="@+id/addListButton"
+            android:id="@+id/buttonShoppingListAdd"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/button_add" />
@@ -34,7 +34,7 @@
 
 
     <ListView
-        android:id="@+id/shoppingListArrayView"
+        android:id="@+id/listShoppingList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </ListView>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_share"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_share"
+        android:title="@string/action_share_list"/>
+    <item
+        android:id="@+id/item_clear"
+        android:icon="@drawable/ic_delete_forever_dark"
+        android:orderInCategory="4"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_clear_list"/>
+    <item
+        android:id="@+id/item_list_delete"
+        android:orderInCategory="5"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_delete_list"/>
+    <item
+        android:id="@+id/item_settings"
+        android:icon="@drawable/ic_menu_manage"
+        android:orderInCategory="6"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/item_logout"
+        android:orderInCategory="100"
+        android:title="@string/action_logout"
+        app:showAsAction="never"/>
+
+</menu>

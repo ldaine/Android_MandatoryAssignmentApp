@@ -23,8 +23,8 @@
 
         <!-- Activities -->
         <activity
-            android:name=".ShoppingListOverviewActivity"
-            android:label="@string/title_activity_shopping_list_overview">
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,10 +33,17 @@
         </activity>
         <activity
             android:name=".ShoppingListActivity"
-            android:label="@string/title_activity_shopping_list"></activity>
+            android:label="@string/title_activity_shopping_list"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".SignupActivity"></activity>
     </application>
 
 </manifest>

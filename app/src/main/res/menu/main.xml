@@ -1,41 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/mandatoryapp">
-    <item
-        android:id="@+id/item_help"
-        android:icon="@android:drawable/ic_menu_help"
-        android:orderInCategory="1"
-        app:showAsAction="always"
-        android:title="@string/button_help"/>
-
-    <item
-        android:id="@+id/item_about"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:orderInCategory="2"
-        app:showAsAction="ifRoom"
-        android:title="@string/button_about"/>
-
-    <item
-        android:id="@+id/item_share"
-        android:orderInCategory="3"
-        app:showAsAction="ifRoom"
-        android:title="@string/button_share"/>
-
-    <item
-        android:id="@+id/item_delete"
-        android:icon="@drawable/ic_delete_forever_dark"
-        android:orderInCategory="4"
-        app:showAsAction="ifRoom"
-        android:title="@string/button_clear"/>
-    <item
-        android:id="@+id/item_list_delete"
-        android:orderInCategory="5"
-        app:showAsAction="ifRoom"
-        android:title="@string/button_list_delete"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/item_settings"
-        android:icon="@drawable/ic_delete_forever_dark"
+        android:icon="@drawable/ic_menu_manage"
         android:orderInCategory="6"
         app:showAsAction="ifRoom"
-        android:title="@string/button_settings"/>
+        android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/item_logout"
+        android:orderInCategory="100"
+        android:title="@string/action_logout"
+        app:showAsAction="never"/>
 </menu>

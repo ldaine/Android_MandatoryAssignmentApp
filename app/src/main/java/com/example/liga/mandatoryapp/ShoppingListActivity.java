@@ -1,5 +1,6 @@
 package com.example.liga.mandatoryapp;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,29 +26,36 @@ import com.firebase.ui.FirebaseListAdapter;
 public class ShoppingListActivity extends AppCompatActivity {
 
     /*Declaring attributes*/
-    String key; //the product key for the view
-    String firebaseRootConectionString = "https://shoppingappbaaa2016.firebaseio.com/shoppingList/";
-    String firebaseConectionString;
-    String firebaseProductListConnectionString;
-    Firebase productListDetailsRef;
-    Firebase productListRef;
-    Button addProductButton;
-    Button deleteButton;
-    EditText addProductInput;
-    EditText editAmount;
-    ListView productListView;
-    Spinner spinner;
-    ArrayAdapter<CharSequence> adapterSpinnerAmount;
-    FirebaseListAdapter<Product> productListFirebaseAdapter;
-    Product newProduct;
-    Product deletedProduct;
+    private String userId;
+    private String key; //the product key for the view
+    String firebaseShoppingListUrl; //[firebaseRootConectionString]/<key>
+    String firebaseProductListConnectionString; //[firebaseRootConectionString]/<key>/products
+
+    private Firebase mRef = new Firebase(Constants.FIREBASE_URL);
+    Firebase productListDetailsRef; //The shopping list object (name, date, product list)
+    Firebase productListRef; //the product list
+    Button buttonProductAdd; //add button
+    Button buttonProductDelete; //remove button
+    EditText inputProductName; //name of the new product
+    EditText inputProductAmount; ///amount of the new product
+    ListView listProductsView; //product list
+    Spinner spinnerProductMeasure; //measurment drop down field
+    ArrayAdapter<CharSequence> adapterSpinnerProductMeasure; //adapter for the measurment drop down - adding values from array
+    FirebaseListAdapter<Product> productListFirebaseAdapter; //firebase UI adapter for product list
+    Product newProduct; //new product object
+    Product deletedProduct; //copy of just deleted object - used in undo
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
-        //getActionBar().setHomeButtonEnabled(true); //this means we can click "home"
+        //trying to get the userId
+        try {
+            userId = mRef.getAuth().getUid();
+        } catch (Exception e) {
+            loadLoginView();
+        }
 
         Intent intent = getIntent();
         if(intent != null){
@@ -61,30 +69,36 @@ public class ShoppingListActivity extends AppCompatActivity {
             key = savedKey;
         }
 
+        getSupportActionBar().setTitle(key);
+
         /*Firebase initialization*/
-        Firebase.setAndroidContext(this);
-        firebaseConectionString = firebaseRootConectionString + key;
-        firebaseProductListConnectionString = firebaseConectionString + "/products";
-        productListDetailsRef = new Firebase(firebaseConectionString);
+        firebaseShoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists/" + key;
+        productListRef = new Firebase(firebaseShoppingListUrl);
+
+        //firebaseConectionString = Constants.FIREBASE_URL + key;
+        firebaseProductListConnectionString = firebaseShoppingListUrl + "/products";
+        productListDetailsRef = new Firebase(firebaseShoppingListUrl);
         productListRef = new Firebase(firebaseProductListConnectionString);
 
 
         /*View bindings*/
-        addProductButton = (Button) findViewById(R.id.inputButton);
-        deleteButton = (Button) findViewById(R.id.deleteButton);
-        addProductInput = (EditText) findViewById(R.id.inputItem);
-        editAmount = (EditText) findViewById(R.id.inputAmount);
-        productListView = (ListView) findViewById(R.id.list);
-        spinner = (Spinner) findViewById(R.id.spinnerAmount);
+        buttonProductAdd = (Button) findViewById(R.id.buttonProductAdd);
+        buttonProductDelete = (Button) findViewById(R.id.buttonProductDelete);
+        inputProductName = (EditText) findViewById(R.id.inputProductName);
+        inputProductAmount = (EditText) findViewById(R.id.inputProductAmount);
+        listProductsView = (ListView) findViewById(R.id.listProducts);
+        spinnerProductMeasure = (Spinner) findViewById(R.id.spinnerProductMeasure);
 
-        //adding amount drop down picker to the view
-        adapterSpinnerAmount = ArrayAdapter.createFromResource(this,
+        //Setting Spinner Adapter
+        //adding measurement drop down picker to the view
+        adapterSpinnerProductMeasure = ArrayAdapter.createFromResource(this,
                 R.array.measurments_array,
                 android.R.layout.simple_spinner_dropdown_item);
 
-        assert spinner != null;
-        spinner.setAdapter(adapterSpinnerAmount);
+        assert spinnerProductMeasure != null;
+        spinnerProductMeasure.setAdapter(adapterSpinnerProductMeasure);
 
+        //Setting Firebase Adapter
         productListFirebaseAdapter = new FirebaseListAdapter<Product>(this, Product.class, android.R.layout.simple_list_item_checked, productListRef) {
             @Override
             protected void populateView(View view, Product product, int i) {
@@ -94,29 +108,29 @@ public class ShoppingListActivity extends AppCompatActivity {
         };
 
         //setting listView config
-        assert productListView != null;
-        productListView.setAdapter(productListFirebaseAdapter);
-        productListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        assert listProductsView != null;
+        listProductsView.setAdapter(productListFirebaseAdapter);
+        listProductsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         //setting listener functions
-        assert addProductButton != null;
-        addProductButton.setOnClickListener(new View.OnClickListener() {
+        assert buttonProductAdd != null;
+        buttonProductAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //getting the value from edit field
-                assert addProductInput != null;
+                assert inputProductName != null;
                 newProduct = new Product();
 
-                String productName = addProductInput.getText().toString();
+                String productName = inputProductName.getText().toString();
                 if (productName.equals("")) {
                     newProduct.setName("unknown");
                 } else {
-                    newProduct.setName(addProductInput.getText().toString());
+                    newProduct.setName(inputProductName.getText().toString());
                 }
 
                 try {
-                    newProduct.setQuantity(Integer.parseInt(editAmount.getText().toString()));
+                    newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
                     //Log.d("DEBUG editAmount ", editAmount.getText().toString());
                 } catch (NumberFormatException e) {
                     newProduct.setQuantity(0);
@@ -124,17 +138,17 @@ public class ShoppingListActivity extends AppCompatActivity {
                 }
 
                 try {
-                    newProduct.setQuantity(Integer.parseInt(editAmount.getText().toString()));
+                    newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
                     //Log.d("DEBUG editAmount ", editAmount.getText().toString());
                 } catch (NumberFormatException e) {
                     newProduct.setQuantity(0);
                     //Log.d("DEBUG editAmount: ", "not a number");
                 }
 
-                if (spinner.getSelectedItemPosition() == 0) {
+                if (spinnerProductMeasure.getSelectedItemPosition() == 0) {
                     newProduct.setMeasurment("pcs");
                 } else {
-                    newProduct.setMeasurment((String) spinner.getSelectedItem());
+                    newProduct.setMeasurment((String) spinnerProductMeasure.getSelectedItem());
                 }
 
                 //pushing the new list to firebase
@@ -144,115 +158,73 @@ public class ShoppingListActivity extends AppCompatActivity {
                 //that the data has changed - we have added stuff now!
                 productListFirebaseAdapter.notifyDataSetChanged();
 
-                addProductInput.setText("");
-                editAmount.setText("");
-                spinner.setSelection(0);
+                inputProductName.setText("");
+                inputProductAmount.setText("");
+                spinnerProductMeasure.setSelection(0);
             }
         });
 
         //REMOVE ITEM
-        assert deleteButton != null;
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        assert buttonProductDelete != null;
+        buttonProductDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //get position
-                int position = productListView.getCheckedItemPosition();
+                int position = listProductsView.getCheckedItemPosition();
                 //make copy
                 deletedProduct = productListFirebaseAdapter.getItem(position);
 
                 Snackbar snackbar = Snackbar
-                        .make(productListView, "Item is deleted", Snackbar.LENGTH_LONG)
+                        .make(listProductsView, "Item is deleted", Snackbar.LENGTH_LONG)
                         .setAction("UNDO", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 //add back to firebase
                                 productListRef.push().setValue(deletedProduct);
-                                Snackbar snackbar = Snackbar.make(productListView, "Item restored!", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(listProductsView, "Item restored!", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                             }
                         });
 
-
                 //delete item
                 productListFirebaseAdapter.getRef(position).removeValue();
-
+                //show the undo snackbar
                 snackbar.show();
-
             }
         });
     }
 
+    //setting the menu in action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //We we set that we want to use the xml file
         //under the menu directory in the resources and
         // that we want to use the specific file called "main.xml"
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.list, menu);
         return true;
     }
 
-    private void setShareIntent(String product){
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain"); //MIME type
-        intent.putExtra(Intent.EXTRA_TEXT, product); //add the text to t
-        startActivity(intent);
-    }
-
-    public String convertListToString()
-    {
-        String result = "";
-        for (int i = 0; i<productListFirebaseAdapter.getCount();i++)
-        {
-            Product p = productListFirebaseAdapter.getItem(i);
-            result += p.toString();
-            result += "\n";
-        }
-        return result;
-    }
-
-
-    //Here we put the code for what should happen in the app once
-    //the user selects one of our menu items (regardless of whether
-    //it is in the actionbar or in the overflow menu.
+    //handling actions on action bar or overflow menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case android.R.id.home:
-                Toast.makeText(this, "Application icon clicked!",
-                        Toast.LENGTH_SHORT).show();
-                return true; //return true, means we have handled the event
-            case R.id.item_about:
-                Toast.makeText(this, "About item clicked!", Toast.LENGTH_SHORT)
-                        .show();
-                return true;
             case R.id.item_list_delete:
-                //Toast.makeText(this, "I want to delete List", Toast.LENGTH_SHORT)
-                        //.show();
                 callCofirmDeleteList(ShoppingListActivity.this);
                 return true;
-            case R.id.item_delete:
+            case R.id.item_clear:
                 callCofirmClearList();
                 return true;
-            case R.id.item_help:
-                Toast.makeText(this, "Help item clicked!", Toast.LENGTH_SHORT)
-                        .show();
-                return true;
-
             case R.id.item_share:
                 String productList = convertListToString();
                 setShareIntent(productList);
                 return true;
-
-
             case R.id.item_settings:
                 //Here we create a new activity and we instruct the
                 //Android system to start it
                 Intent intent = new Intent(this, SettingsActivity.class);
-
-                //we can use this, if we need to know when the user exists our preference screens
                 startActivityForResult(intent, 1);
+                return true;
+            case R.id.item_logout:
                 return true;
         }
 
@@ -274,6 +246,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    //function to get preferences values and display as Toast (temp)
     public void getPreferences(View v) {
 
         //We read the shared preferences from the
@@ -288,6 +261,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                         + soundEnabled, Toast.LENGTH_SHORT).show();
     }
 
+    //functions to handle orientation change
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("key", key);
@@ -299,11 +273,28 @@ public class ShoppingListActivity extends AppCompatActivity {
 
     }
 
+    //function to start Share activity
+    private void setShareIntent(String product){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain"); //MIME type
+        intent.putExtra(Intent.EXTRA_TEXT, product); //add the text to t
+        startActivity(intent);
+    }
+
+    //function to convert product list to a string
+    public String convertListToString() {
+        String result = "";
+        for (int i = 0; i<productListFirebaseAdapter.getCount();i++)
+        {
+            Product p = productListFirebaseAdapter.getItem(i);
+            result += p.toString();
+            result += "\n";
+        }
+        return result;
+    }
+
     //function to call the Confirmation Fragment
     protected void callCofirmClearList(){
-
-        //final Firebase productListRef = new Firebase(firebaseRootConectionString + key + "/products");
-
         ConfirmDialogFragment dialog = new ConfirmDialogFragment() {
             @Override
             protected void positiveClick() {
@@ -333,10 +324,10 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         //set the confirm window message text
         Bundle bundle = new Bundle();
-        bundle.putString("title", getResources().getString(R.string.confirm_delete_heading));
-        bundle.putString("message", getResources().getString(R.string.confirm_delete_message));
-        bundle.putString("confirm", getResources().getString(R.string.confirm_delete_btn_yes));
-        bundle.putString("reject", getResources().getString(R.string.confirm_delete_btn_no));
+        bundle.putString("title", getResources().getString(R.string.confirm_clear_list_heading));
+        bundle.putString("message", getResources().getString(R.string.confirm_clear_list_message));
+        bundle.putString("confirm", getResources().getString(R.string.confirm_btn_yes));
+        bundle.putString("reject", getResources().getString(R.string.confirm_btn_no));
         dialog.setArguments(bundle);
         //Here we show the dialog
         //The tag "MyFragement" is not important for us.
@@ -345,22 +336,15 @@ public class ShoppingListActivity extends AppCompatActivity {
 
     //function to call the Confirmation Fragment
     protected void callCofirmDeleteList(final Context context){
-
-
         ConfirmDialogFragment dialog = new ConfirmDialogFragment() {
             @Override
             protected void positiveClick() {
-                //Here we override the methods and can now
                 productListDetailsRef.removeValue();
-                //Intent intent = new Intent(context, ShoppingListOverviewActivity.class);
-                //startActivity(intent);
                 ((Activity) context).finish();
-
-                }
+            }
 
             @Override
             protected void negativeClick() {
-                //Here we override the method and can now do something
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "action cancelled", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
@@ -372,12 +356,21 @@ public class ShoppingListActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("title", getResources().getString(R.string.confirm_delete_heading));
         bundle.putString("message", getResources().getString(R.string.confirm_delete_message));
-        bundle.putString("confirm", getResources().getString(R.string.confirm_delete_btn_yes));
-        bundle.putString("reject", getResources().getString(R.string.confirm_delete_btn_no));
+        bundle.putString("confirm", getResources().getString(R.string.confirm_btn_yes));
+        bundle.putString("reject", getResources().getString(R.string.confirm_btn_no));
         dialog.setArguments(bundle);
         //Here we show the dialog
         //The tag "MyFragement" is not important for us.
         dialog.show(getFragmentManager(), "MyFragment");
     }
+
+    //load login Activity
+    private void loadLoginView() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
 
 }
