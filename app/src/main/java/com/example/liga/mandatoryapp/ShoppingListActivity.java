@@ -20,7 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 
 public class ShoppingListActivity extends AppCompatActivity {
@@ -68,8 +71,8 @@ public class ShoppingListActivity extends AppCompatActivity {
             assert savedKey != null;
             key = savedKey;
         }
+        //changing action bar title to the list name
 
-        getSupportActionBar().setTitle(key);
 
         /*Firebase initialization*/
         firebaseShoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists/" + key;
@@ -98,6 +101,21 @@ public class ShoppingListActivity extends AppCompatActivity {
         assert spinnerProductMeasure != null;
         spinnerProductMeasure.setAdapter(adapterSpinnerProductMeasure);
 
+        //setting the name of list as title
+        productListDetailsRef.child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                String title = snapshot.getValue().toString();
+                getSupportActionBar().setTitle(title);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
         //Setting Firebase Adapter
         productListFirebaseAdapter = new FirebaseListAdapter<Product>(this, Product.class, android.R.layout.simple_list_item_checked, productListRef) {
             @Override
@@ -111,6 +129,12 @@ public class ShoppingListActivity extends AppCompatActivity {
         assert listProductsView != null;
         listProductsView.setAdapter(productListFirebaseAdapter);
         listProductsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        final String prefMeasure = prefs.getString("measure", "");
+        final String prefName = prefs.getString("name", "");
+
+        spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
 
         //setting listener functions
         assert buttonProductAdd != null;
@@ -146,7 +170,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                 }
 
                 if (spinnerProductMeasure.getSelectedItemPosition() == 0) {
-                    newProduct.setMeasurment("pcs");
+                    newProduct.setMeasurment(prefMeasure);
                 } else {
                     newProduct.setMeasurment((String) spinnerProductMeasure.getSelectedItem());
                 }
@@ -160,7 +184,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
                 inputProductName.setText("");
                 inputProductAmount.setText("");
-                spinnerProductMeasure.setSelection(0);
+                spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
             }
         });
 
@@ -237,28 +261,13 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==1) //exited our preference screen
         {
-            Toast toast =
-                    Toast.makeText(getApplicationContext(), "back from preferences", Toast.LENGTH_LONG);
-            toast.setText("back from our preferences");
-            toast.show();
-            //here you could put code to do something.......
+            SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+            final String prefMeasure = prefs.getString("measure", "");
+            final String prefName = prefs.getString("name", "");
+
+            spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    //function to get preferences values and display as Toast (temp)
-    public void getPreferences(View v) {
-
-        //We read the shared preferences from the
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String email = prefs.getString("email", "");
-        String gender = prefs.getString("gender", "");
-        boolean soundEnabled = prefs.getBoolean("sound", false);
-
-        Toast.makeText(
-                this,
-                "Email: " + email + "\nGender: " + gender + "\nSound Enabled: "
-                        + soundEnabled, Toast.LENGTH_SHORT).show();
     }
 
     //functions to handle orientation change

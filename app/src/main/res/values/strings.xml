@@ -31,15 +31,6 @@
     <string name="confirm_clear_list_heading">Confirmation</string>
     <string name="confirm_clear_list_message">Are you sure, you want to remove all products?</string>
 
-    <string-array name="measurments_array">
-        <item>pcs</item>
-        <item>g</item>
-        <item>kg</item>
-        <item>l</item>
-        <item>pack(s)</item>
-    </string-array>
-
-
     <!-- Authentication -->
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
@@ -55,7 +46,21 @@
     <string name="add_item">Add New Item</string>
     <string name="action_logout">Logout</string>
 
-    <!-- Settings/Preferences -->
+    <!-- Arrays -->
+    <string-array name="measurments_array">
+        <item>pcs</item>
+        <item>g</item>
+        <item>kg</item>
+        <item>l</item>
+        <item>pack</item>
+    </string-array>
+    <string-array name="measurments_values">
+        <item>pcs</item>
+        <item>g</item>
+        <item>kg</item>
+        <item>l</item>
+        <item>pack</item>
+    </string-array>
     <string-array name="gender_values">
         <item>male</item>
         <item>female</item>
