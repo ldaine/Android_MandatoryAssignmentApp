@@ -53,6 +53,10 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
+        //checking if the user is authenticated
+        if (mRef.getAuth() == null) {
+            loadLoginView();
+        }
         //trying to get the userId
         try {
             userId = mRef.getAuth().getUid();
@@ -78,7 +82,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         firebaseShoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists/" + key;
         productListRef = new Firebase(firebaseShoppingListUrl);
 
-        //firebaseConectionString = Constants.FIREBASE_URL + key;
         firebaseProductListConnectionString = firebaseShoppingListUrl + "/products";
         productListDetailsRef = new Firebase(firebaseShoppingListUrl);
         productListRef = new Firebase(firebaseProductListConnectionString);

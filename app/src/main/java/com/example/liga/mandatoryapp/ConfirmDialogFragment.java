@@ -19,6 +19,7 @@ public class ConfirmDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        setRetainInstance(true); //thanks to this setting the app doesnt crash on orientation change
         Bundle bundle = this.getArguments();
         String title = bundle.getString("title");
         String message = bundle.getString("message");

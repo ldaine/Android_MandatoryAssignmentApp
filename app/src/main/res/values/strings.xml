@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MandatoryApp</string>
+    <string name="app_name">ShoppingApp</string>
 
     <!-- Activity Titles -->
     <string name="title_activity_main_activity">My Shopping Lists</string>
