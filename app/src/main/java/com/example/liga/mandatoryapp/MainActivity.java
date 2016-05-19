@@ -54,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        final String prefName = prefs.getString("name", "Lists");
-        getSupportActionBar().setTitle(prefName);
+        setActionBarTitle(prefs.getString("name", ""));
 
         /*set bindings*/
         inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
@@ -158,14 +157,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String prefName = prefs.getString("name", "My Lists");
-        String title;
-        if (prefName == ""){
-            title = "My Lists";
-        } else {
-            title = prefName + "'s Lists";
-        }
-        getSupportActionBar().setTitle(title);
+        setActionBarTitle(prefs.getString("name", ""));
         super.onResume();
     }
 
@@ -174,6 +166,16 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void setActionBarTitle(String prefName){
+        String title;
+        if(prefName.equals("")){
+            title = "My Lists";
+        } else {
+            title = prefName + "'s Lists";
+        }
+        getSupportActionBar().setTitle(title);
     }
 
 }
