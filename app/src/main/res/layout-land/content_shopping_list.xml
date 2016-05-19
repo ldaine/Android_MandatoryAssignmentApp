@@ -23,8 +23,7 @@
             />
         <EditText
             android:id="@+id/inputProductAmount"
-            android:layout_width="match_parent"
-            android:layout_weight="3"
+            android:layout_width="104dp"
             android:layout_height="wrap_content"
             android:hint="@string/input_product_amount"
             android:inputType="number"
@@ -32,33 +31,37 @@
 
         <Spinner
             android:id="@+id/spinnerProductMeasure"
-            android:layout_width="128dp"
+            android:layout_width="95dp"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/buttonProductAdd"
-            android:layout_width="100dp"
+            android:layout_width="126dp"
             android:layout_height="wrap_content"
-            android:text="@string/button_add" />
+            android:text="@string/button_add"
+            android:clickable="false" />
 
     </LinearLayout>
 
     <ListView
         android:id="@+id/listProducts"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="161dp">
     </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:gravity="right">
 
         <Button
             android:id="@+id/buttonProductDelete"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_remove" />
+            android:text="@string/button_remove"
+            android:layout_weight="0.17" />
 
     </LinearLayout>
 

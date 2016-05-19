@@ -73,9 +73,12 @@
     <!-- Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-
-
+    <string name="list_input_error_message">Enter a list name and try again.</string>
+    <string name="list_input_error_title">Missing Input</string>
+    <string name="product_input_error_message">Enter a name for the product and try again.</string>
+    <string name="product_input_error_title">No name found</string>
+    <string name="product_remove_error_message">No product selected</string>
+    <string name="product_remove_error_title">Select a product to remove adn then press \'Remove Selected\' button.</string>
 
 
 </resources>

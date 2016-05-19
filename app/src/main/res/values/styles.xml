@@ -7,6 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <!--
+        android:tint="@color/primary"
+        -->
+
     </style>
 
     <style name="AppTheme.NoActionBar">

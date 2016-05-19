@@ -1,8 +1,10 @@
 package com.example.liga.mandatoryapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.renderscript.Script;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseListAdapter<ShoppingList> shoppinglistFirebaseAdapter;
 
     EditText inputShoppingListName;
-    Button buttonShoppingListAdd;
+    ImageButton buttonShoppingListAdd;
     ListView listShoppingListView;
 
     //method owerride
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*set bindings*/
         inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
-        buttonShoppingListAdd = (Button) findViewById(R.id.buttonShoppingListAdd);
+        buttonShoppingListAdd = (ImageButton) findViewById(R.id.buttonShoppingListAdd);
         listShoppingListView = (ListView) findViewById(R.id.listShoppingList);
 
         shoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists";
@@ -94,27 +97,27 @@ public class MainActivity extends AppCompatActivity {
                 assert inputShoppingListName != null;
                 String listName = inputShoppingListName.getText().toString();
 
-                //creating new list item
-                ShoppingList listItem = new ShoppingList(listName);
+                //if no list name was entered
+                if (listName.isEmpty()) {
+                    //raise alert
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.list_input_error_message)
+                            .setTitle(R.string.list_input_error_title)
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    //creating new list item
+                    ShoppingList listItem = new ShoppingList(listName);
 
-                //pushing the new list to firebase
-                listRef.push().setValue(listItem);
+                    //pushing the new list to firebase
+                    listRef.push().setValue(listItem);
 
-                //reset the input field
-                inputShoppingListName.setText("");
+                    //reset the input field
+                    inputShoppingListName.setText("");
+                }
             }
         });
-
-        /*
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        */
     }
 
 

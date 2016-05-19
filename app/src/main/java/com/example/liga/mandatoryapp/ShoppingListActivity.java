@@ -1,12 +1,12 @@
 package com.example.liga.mandatoryapp;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -136,8 +136,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
         final String prefMeasure = prefs.getString("measure", "");
         final String prefName = prefs.getString("name", "");
+        final int prefMeasurePosition = adapterSpinnerProductMeasure.getPosition(prefMeasure);
 
-        spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
+        spinnerProductMeasure.setSelection(prefMeasurePosition);
 
         //setting listener functions
         assert buttonProductAdd != null;
@@ -150,44 +151,55 @@ public class ShoppingListActivity extends AppCompatActivity {
                 newProduct = new Product();
 
                 String productName = inputProductName.getText().toString();
-                if (productName.equals("")) {
-                    newProduct.setName("unknown");
+
+                //if no list name was entered
+                if (productName.isEmpty()) {
+                    //raise alert
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingListActivity.this);
+                    builder.setMessage(R.string.product_input_error_message)
+                            .setTitle(R.string.product_input_error_title)
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 } else {
-                    newProduct.setName(inputProductName.getText().toString());
+                    //set name
+                    newProduct.setName(productName);
+
+                    //set Amount
+                    try {
+                        newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
+                        //Log.d("DEBUG editAmount ", editAmount.getText().toString());
+                    } catch (NumberFormatException e) {
+                        newProduct.setQuantity(0);
+                        //Log.d("DEBUG editAmount: ", "not a number");
+                    }
+
+                    //set Measurment
+                    try {
+                        newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
+                        //Log.d("DEBUG editAmount ", editAmount.getText().toString());
+                    } catch (NumberFormatException e) {
+                        newProduct.setQuantity(0);
+                        //Log.d("DEBUG editAmount: ", "not a number");
+                    }
+
+                    if (spinnerProductMeasure.getSelectedItemPosition() == 0) {
+                        newProduct.setMeasurment(prefMeasure);
+                    } else {
+                        newProduct.setMeasurment((String) spinnerProductMeasure.getSelectedItem());
+                    }
+
+                    //pushing the new list to firebase
+                    productListRef.push().setValue(newProduct);
+
+                    //The next line is needed in order to say to the ListView
+                    //that the data has changed - we have added stuff now!
+                    productListFirebaseAdapter.notifyDataSetChanged();
+
+                    inputProductName.setText("");
+                    inputProductAmount.setText("");
+
                 }
-
-                try {
-                    newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
-                    //Log.d("DEBUG editAmount ", editAmount.getText().toString());
-                } catch (NumberFormatException e) {
-                    newProduct.setQuantity(0);
-                    //Log.d("DEBUG editAmount: ", "not a number");
-                }
-
-                try {
-                    newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
-                    //Log.d("DEBUG editAmount ", editAmount.getText().toString());
-                } catch (NumberFormatException e) {
-                    newProduct.setQuantity(0);
-                    //Log.d("DEBUG editAmount: ", "not a number");
-                }
-
-                if (spinnerProductMeasure.getSelectedItemPosition() == 0) {
-                    newProduct.setMeasurment(prefMeasure);
-                } else {
-                    newProduct.setMeasurment((String) spinnerProductMeasure.getSelectedItem());
-                }
-
-                //pushing the new list to firebase
-                productListRef.push().setValue(newProduct);
-
-                //The next line is needed in order to say to the ListView
-                //that the data has changed - we have added stuff now!
-                productListFirebaseAdapter.notifyDataSetChanged();
-
-                inputProductName.setText("");
-                inputProductAmount.setText("");
-                spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
             }
         });
 
@@ -198,25 +210,38 @@ public class ShoppingListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //get position
                 int position = listProductsView.getCheckedItemPosition();
-                //make copy
-                deletedProduct = productListFirebaseAdapter.getItem(position);
 
-                Snackbar snackbar = Snackbar
-                        .make(listProductsView, "Item is deleted", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //add back to firebase
-                                productListRef.push().setValue(deletedProduct);
-                                Snackbar snackbar = Snackbar.make(listProductsView, "Item restored!", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        });
+                if (position < 0) {
+                    //raise alert
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingListActivity.this);
+                    builder.setMessage(R.string.product_remove_error_message)
+                            .setTitle(R.string.product_remove_error_title)
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    //make copy
+                    deletedProduct = productListFirebaseAdapter.getItem(position);
 
-                //delete item
-                productListFirebaseAdapter.getRef(position).removeValue();
-                //show the undo snackbar
-                snackbar.show();
+                    Snackbar snackbar = Snackbar
+                            .make(listProductsView, "Item is deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //add back to firebase
+                                    productListRef.push().setValue(deletedProduct);
+                                    Snackbar snackbar = Snackbar.make(listProductsView, "Item restored!", Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
+                                }
+                            });
+
+                    //delete item
+                    productListFirebaseAdapter.getRef(position).removeValue();
+                    //show the undo snackbar
+                    snackbar.show();
+
+                    listProductsView.setItemChecked(-1, true);
+                }
             }
         });
     }

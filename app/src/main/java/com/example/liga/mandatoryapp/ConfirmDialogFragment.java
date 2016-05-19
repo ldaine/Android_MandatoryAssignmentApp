@@ -1,8 +1,5 @@
 package com.example.liga.mandatoryapp;
 
-/**
- * Created by Liga on 04-04-2016.
- */
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;

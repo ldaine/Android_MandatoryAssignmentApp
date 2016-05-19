@@ -25,11 +25,12 @@
             android:layout_height="wrap_content"
             android:hint="@string/input_list_name"
             />
-        <Button
+        <ImageButton
             android:id="@+id/buttonShoppingListAdd"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/button_add" />
+            android:layout_width="41dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_done_24dp"
+            android:background="@null" />
     </LinearLayout>
 
 

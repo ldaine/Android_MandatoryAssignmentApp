@@ -61,17 +61,12 @@ public class LoginActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-                    final String emailAddress = email;
 
                     //Login with an email/password combination
                     ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
                             // Authenticated successfully with payload authData
-                            //Map<String, Object> map = new HashMap<String, Object>();
-                            //map.put("email", emailAddress);
-                            //ref.child("users").child(authData.getUid()).setValue(map);
-
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
