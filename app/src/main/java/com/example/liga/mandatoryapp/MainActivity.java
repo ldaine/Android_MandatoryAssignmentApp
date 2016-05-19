@@ -1,16 +1,14 @@
 package com.example.liga.mandatoryapp;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.renderscript.Script;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -25,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
     //properties
     private String userId;
-    private String shoppingListUrl;
 
     //there is no need for array list and array list adapter. The firebase UI is handling everything for us.
     private Firebase mRef = new Firebase(Constants.FIREBASE_URL);
@@ -56,12 +53,16 @@ public class MainActivity extends AppCompatActivity {
             loadLoginView();
         }
 
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        final String prefName = prefs.getString("name", "Lists");
+        getSupportActionBar().setTitle(prefName);
+
         /*set bindings*/
         inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
         buttonShoppingListAdd = (ImageButton) findViewById(R.id.buttonShoppingListAdd);
         listShoppingListView = (ListView) findViewById(R.id.listShoppingList);
 
-        shoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists";
+        String shoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists";
         listRef = new Firebase(shoppingListUrl);
 
         shoppinglistFirebaseAdapter = new FirebaseListAdapter<ShoppingList>(this, ShoppingList.class, android.R.layout.two_line_list_item, listRef) {
@@ -152,6 +153,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false; //we did not handle the event
+    }
+
+    @Override
+    protected void onResume() {
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String prefName = prefs.getString("name", "My Lists");
+        String title;
+        if (prefName == ""){
+            title = "My Lists";
+        } else {
+            title = prefName + "'s Lists";
+        }
+        getSupportActionBar().setTitle(title);
+        super.onResume();
     }
 
     private void loadLoginView() {

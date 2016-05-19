@@ -2,6 +2,7 @@ package com.example.liga.mandatoryapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,11 +33,11 @@ public class SignupActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String password = passwordEditText.getText().toString();
-                String email = emailEditText.getText().toString();
+                final String password = passwordEditText.getText().toString().trim();
+                final String email = emailEditText.getText().toString().trim();
 
-                password = password.trim();
-                email = email.trim();
+                //password = password.trim();
+                //email = email.trim();
 
                 if (password.isEmpty() || email.isEmpty()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
@@ -56,6 +57,10 @@ public class SignupActivity extends AppCompatActivity {
                                     .setPositiveButton(R.string.login_button_label, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
+                                            SharedPreferences sharedPref = getSharedPreferences("my_prefs", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putString("email", email);
+                                            editor.commit();
                                             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

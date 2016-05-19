@@ -7,9 +7,9 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Action Bar -->
-    <string name="action_clear_list">Clear List</string>
-    <string name="action_delete_list">Delete List</string>
-    <string name="action_share_list">Share List</string>
+    <string name="action_clear_list">Clear</string>
+    <string name="action_delete_list">Delete</string>
+    <string name="action_share_list">Share</string>
     <string name="action_settings">Settings</string>
 
     <!-- Shopping List Action View -->

@@ -135,7 +135,6 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
         final String prefMeasure = prefs.getString("measure", "");
-        final String prefName = prefs.getString("name", "");
         final int prefMeasurePosition = adapterSpinnerProductMeasure.getPosition(prefMeasure);
 
         spinnerProductMeasure.setSelection(prefMeasurePosition);
@@ -283,6 +282,14 @@ public class ShoppingListActivity extends AppCompatActivity {
         return false; //we did not handle the event
     }
 
+    @Override
+    protected void onResume() {
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String prefName = prefs.getString("name", "My Lists");
+        getSupportActionBar().setTitle(prefName + "'s Lists");
+        super.onResume();
+    }
+
     //This will be called when other activities in our application
     //are finished.
     @Override
@@ -291,7 +298,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         {
             SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
             final String prefMeasure = prefs.getString("measure", "");
-            final String prefName = prefs.getString("name", "");
 
             spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
         }

@@ -1,8 +1,10 @@
 package com.example.liga.mandatoryapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 
 public class SettingsActivity extends PreferenceActivity {
 

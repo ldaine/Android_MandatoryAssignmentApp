@@ -4,20 +4,21 @@
     <item
         android:id="@+id/item_share"
         android:orderInCategory="1"
-        app:showAsAction="always"
+        app:showAsAction="always|withText"
         android:icon="@drawable/ic_share_24dp"
         android:title="@string/action_share_list"/>
     <item
         android:id="@+id/item_clear"
         android:icon="@drawable/ic_delete_24dp"
         android:orderInCategory="2"
-        app:showAsAction="ifRoom"
+        app:showAsAction="ifRoom|withText"
+        android:tint="@color/colorPrimaryLight"
         android:title="@string/action_clear_list"/>
     <item
         android:id="@+id/item_list_delete"
         android:icon="@drawable/ic_cancel_24dp"
         android:orderInCategory="3"
-        app:showAsAction="ifRoom"
+        app:showAsAction="ifRoom|withText"
         android:title="@string/action_delete_list"/>
     <item
         android:id="@+id/item_settings"
