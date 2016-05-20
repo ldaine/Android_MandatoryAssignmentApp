@@ -10,8 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -47,24 +51,54 @@ public class SignupActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-
-                    // signup
-                    ref.createUser(email, password, new Firebase.ResultHandler() {
+                    // signup - creating user
+                    ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(Map<String, Object> result) {
+
+                            //confirmation for signup
+                            //after clicking ok, the user is logged in.
                             AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                             builder.setMessage(R.string.signup_success)
                                     .setPositiveButton(R.string.login_button_label, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            SharedPreferences sharedPref = getSharedPreferences("my_prefs", MODE_PRIVATE);
+
+                                            //write email in preferences
+                                            SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPref.edit();
-                                            editor.putString("email", email);
+                                            editor.putString(Constants.KEY_PREF_EMAIL, email);
                                             editor.commit();
-                                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            startActivity(intent);
+
+                                            //auto login
+                                            ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+                                                @Override
+                                                public void onAuthenticated(AuthData authData) {
+                                                    // Authenticated successfully with payload authData
+                                                    //creating the data object in firebase
+                                                    Map<String, Object> map = new HashMap<String, Object>();
+                                                    map.put("email", email);
+                                                    ref.child("users").child(authData.getUid()).setValue(map);
+
+                                                    //redirecting to Main Activity
+                                                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                    startActivity(intent);
+                                                }
+
+                                                @Override
+                                                public void onAuthenticationError(FirebaseError firebaseError) {
+                                                    // Authenticated failed with error firebaseError
+                                                    //Raise Alert Error
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                                                    builder.setMessage(firebaseError.getMessage())
+                                                            .setTitle(R.string.login_error_title)
+                                                            .setPositiveButton(android.R.string.ok, null);
+                                                    AlertDialog dialog = builder.create();
+                                                    dialog.show();
+                                                }
+                                            });
                                         }
                                     });
                             AlertDialog dialog = builder.create();

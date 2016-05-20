@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
             loadLoginView();
         }
 
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        setActionBarTitle(prefs.getString("name", ""));
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+        setActionBarTitle(prefs.getString(Constants.KEY_PREF_NAME, ""));
 
         /*set bindings*/
         inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
@@ -156,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        setActionBarTitle(prefs.getString("name", ""));
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+        setActionBarTitle(prefs.getString(Constants.KEY_PREF_NAME, ""));
         super.onResume();
     }
 

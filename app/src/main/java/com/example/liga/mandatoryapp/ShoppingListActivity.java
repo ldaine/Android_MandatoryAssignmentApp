@@ -109,8 +109,8 @@ public class ShoppingListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                String title = snapshot.getValue().toString();
-                getSupportActionBar().setTitle(title);
+                setActionBarTitle(snapshot.getValue().toString());
+
             }
 
             @Override
@@ -133,8 +133,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         listProductsView.setAdapter(productListFirebaseAdapter);
         listProductsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        final String prefMeasure = prefs.getString("measure", "");
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+        final String prefMeasure = prefs.getString(Constants.KEY_PREF_MEASUREMENT, "");
         final int prefMeasurePosition = adapterSpinnerProductMeasure.getPosition(prefMeasure);
 
         spinnerProductMeasure.setSelection(prefMeasurePosition);
@@ -282,14 +282,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         return false; //we did not handle the event
     }
 
-    @Override
-    protected void onResume() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String prefName = prefs.getString("name", "My Lists");
-        getSupportActionBar().setTitle(prefName + "'s Lists");
-        super.onResume();
-    }
-
     //This will be called when other activities in our application
     //are finished.
     @Override
@@ -413,5 +405,15 @@ public class ShoppingListActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void setActionBarTitle(String name){
+        String title;
+        if(name.equals("")){
+            title = "Unknown List";
+        } else {
+            title = name;
+        }
+        getSupportActionBar().setTitle(title);
     }
 }
