@@ -275,6 +275,8 @@ public class ShoppingListActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
                 return true;
             case R.id.item_logout:
+                mRef.unauth();
+                loadLoginView();
                 return true;
         }
 
