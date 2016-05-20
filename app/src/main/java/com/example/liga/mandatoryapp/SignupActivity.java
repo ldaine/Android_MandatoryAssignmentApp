@@ -14,6 +14,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +69,7 @@ public class SignupActivity extends AppCompatActivity {
                                             SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.putString(Constants.KEY_PREF_EMAIL, email);
+                                            editor.putString(Constants.KEY_PREF_PASSWORD, password);
                                             editor.commit();
 
                                             //auto login
@@ -77,6 +79,7 @@ public class SignupActivity extends AppCompatActivity {
                                                     // Authenticated successfully with payload authData
                                                     //creating the data object in firebase
                                                     Map<String, Object> map = new HashMap<String, Object>();
+                                                    map.put("createDate", new Date());
                                                     map.put("email", email);
                                                     ref.child("users").child(authData.getUid()).setValue(map);
 

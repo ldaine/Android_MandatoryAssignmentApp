@@ -3,12 +3,20 @@
     <EditTextPreference
         android:key="name"
         android:summary="Change your display name"
-        android:title="Change Name" />
+        android:title="Name" />
 
     <EditTextPreference
         android:key="email"
         android:summary="Change your email address"
-        android:title="Change Email" />
+        android:title="Email" />
+
+    <!--
+    <EditTextPreference
+        android:key="password"
+        android:summary="Change your password"
+        android:title="Password"
+        android:inputType="textPassword" />
+     -->
 
     <ListPreference
         android:entries="@array/gender_type"

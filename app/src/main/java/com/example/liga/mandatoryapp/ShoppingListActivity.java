@@ -110,7 +110,6 @@ public class ShoppingListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
                 setActionBarTitle(snapshot.getValue().toString());
-
             }
 
             @Override
