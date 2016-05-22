@@ -1,6 +1,7 @@
 package com.example.liga.mandatoryapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,10 +13,6 @@ import android.widget.TextView;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -61,6 +58,13 @@ public class LoginActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
+
+                    //write email and password in preferences
+                    SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(Constants.KEY_PREF_EMAIL, email);
+                    editor.putString(Constants.KEY_PREF_PASSWORD, password);
+                    editor.apply();
 
                     //Login with an email/password combination
                     ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {

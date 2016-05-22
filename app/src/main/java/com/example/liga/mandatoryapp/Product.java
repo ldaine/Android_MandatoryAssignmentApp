@@ -3,21 +3,18 @@ package com.example.liga.mandatoryapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Liga on 04-04-2016.
- */
 public class Product implements Parcelable {
     private String name;
     private int quantity;
-    private String measurment;
+    private String measurement;
 
     public Product(){
     }
 
-    public Product(String name, int quantity, String measurment){
+    public Product(String name, int quantity, String measurement){
         this.name = name;
         this.quantity = quantity;
-        this.measurment = measurment;
+        this.measurement = measurement;
     }
 
     public void setName(String name){
@@ -26,8 +23,8 @@ public class Product implements Parcelable {
     public void setQuantity(int q){
         this.quantity = q;
     }
-    public void setMeasurment(String m){
-        this.measurment = m;
+    public void setMeasurement(String m){
+        this.measurement = m;
     }
 
     public String getName(){
@@ -36,14 +33,14 @@ public class Product implements Parcelable {
     public int getQuantity(){
         return this.quantity;
     }
-    public String getMeasurment(){
-        return this.measurment;
+    public String getMeasurement(){
+        return this.measurement;
     }
 
     @Override
     public String toString() {
         if(this.name != null){
-            return this.name + ", " + this.quantity + " " + this.measurment;
+            return this.name + ", " + this.quantity + " " + this.measurement;
         }
         return "Error";
     }
@@ -57,7 +54,7 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeInt(quantity);
-        dest.writeString(measurment);
+        dest.writeString(measurement);
     }
 
     // Creator

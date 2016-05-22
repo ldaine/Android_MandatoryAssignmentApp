@@ -6,8 +6,8 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Action Bar -->
-    <string name="action_clear_list">Clear</string>
-    <string name="action_delete_list">Delete</string>
+    <string name="action_clear_list">Clear List</string>
+    <string name="action_delete_list">Delete List</string>
     <string name="action_share_list">Share</string>
     <string name="action_settings">Settings</string>
 
@@ -25,10 +25,10 @@
     <string name="confirm_btn_no">No</string>
 
     <string name="confirm_delete_heading">Confirmation</string>
-    <string name="confirm_delete_message">Are you sure, you want to remove all products?</string>
+    <string name="confirm_delete_message">Are you sure you want to delete list? This action cannot be undone.</string>
 
     <string name="confirm_clear_list_heading">Confirmation</string>
-    <string name="confirm_clear_list_message">Are you sure, you want to remove all products?</string>
+    <string name="confirm_clear_list_message">Are you sure you want to remove all products?</string>
 
     <!-- Authentication -->
     <string name="password_hint">Password</string>

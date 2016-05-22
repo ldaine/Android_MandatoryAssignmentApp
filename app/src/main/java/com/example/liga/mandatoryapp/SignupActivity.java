@@ -41,9 +41,6 @@ public class SignupActivity extends AppCompatActivity {
                 final String password = passwordEditText.getText().toString().trim();
                 final String email = emailEditText.getText().toString().trim();
 
-                //password = password.trim();
-                //email = email.trim();
-
                 if (password.isEmpty() || email.isEmpty()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                     builder.setMessage(R.string.signup_error_message)
@@ -65,12 +62,12 @@ public class SignupActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                                            //write email in preferences
+                                            //write email and password in preferences
                                             SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.putString(Constants.KEY_PREF_EMAIL, email);
                                             editor.putString(Constants.KEY_PREF_PASSWORD, password);
-                                            editor.commit();
+                                            editor.apply();
 
                                             //auto login
                                             ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {

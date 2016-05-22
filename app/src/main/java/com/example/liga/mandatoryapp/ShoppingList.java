@@ -3,15 +3,10 @@ package com.example.liga.mandatoryapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Liga on 12-05-2016.
- */
 public class ShoppingList implements Parcelable {
     private String name;
     private Date date = new Date();

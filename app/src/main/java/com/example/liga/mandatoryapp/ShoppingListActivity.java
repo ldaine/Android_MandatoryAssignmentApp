@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,19 +65,11 @@ public class ShoppingListActivity extends AppCompatActivity {
             loadLoginView();
         }
 
+        //getting variable from MainActivity
         Intent intent = getIntent();
         if(intent != null){
             key = intent.getStringExtra("key");
         }
-
-        if (savedInstanceState != null) {
-
-            String savedKey = savedInstanceState.getString("key");
-            assert savedKey != null;
-            key = savedKey;
-        }
-        //changing action bar title to the list name
-
 
         /*Firebase initialization*/
         firebaseShoppingListUrl = Constants.FIREBASE_URL + "/users/" + userId + "/lists/" + key;
@@ -92,8 +85,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         buttonProductDelete = (Button) findViewById(R.id.buttonProductDelete);
         inputProductName = (EditText) findViewById(R.id.inputProductName);
         inputProductAmount = (EditText) findViewById(R.id.inputProductAmount);
-        listProductsView = (ListView) findViewById(R.id.listProducts);
         spinnerProductMeasure = (Spinner) findViewById(R.id.spinnerProductMeasure);
+        listProductsView = (ListView) findViewById(R.id.listProducts);
 
         //Setting Spinner Adapter
         //adding measurement drop down picker to the view
@@ -109,7 +102,9 @@ public class ShoppingListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                setActionBarTitle(snapshot.getValue().toString());
+                if(snapshot.getValue() != null){
+                    setActionBarTitle(snapshot.getValue().toString());
+                }
             }
 
             @Override
@@ -119,7 +114,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         });
 
         //Setting Firebase Adapter
-        productListFirebaseAdapter = new FirebaseListAdapter<Product>(this, Product.class, android.R.layout.simple_list_item_checked, productListRef) {
+        productListFirebaseAdapter = new FirebaseListAdapter<Product>(this,
+                Product.class,
+                android.R.layout.simple_list_item_checked, productListRef) {
             @Override
             protected void populateView(View view, Product product, int i) {
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
@@ -132,25 +129,20 @@ public class ShoppingListActivity extends AppCompatActivity {
         listProductsView.setAdapter(productListFirebaseAdapter);
         listProductsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
-        final String prefMeasure = prefs.getString(Constants.KEY_PREF_MEASUREMENT, "");
-        final int prefMeasurePosition = adapterSpinnerProductMeasure.getPosition(prefMeasure);
-
-        spinnerProductMeasure.setSelection(prefMeasurePosition);
+        setMeasurementSpinnerValue();
 
         //setting listener functions
         assert buttonProductAdd != null;
         buttonProductAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //getting the value from edit field
-                assert inputProductName != null;
+                //creating new instance of Product class
                 newProduct = new Product();
 
+                //getting the value of name filed
                 String productName = inputProductName.getText().toString();
 
-                //if no list name was entered
+                //if the value of name field is empty, raise alert
                 if (productName.isEmpty()) {
                     //raise alert
                     AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingListActivity.this);
@@ -160,32 +152,32 @@ public class ShoppingListActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-                    //set name
-                    newProduct.setName(productName);
+                    //set properties to the product
+                    //setting name
+                    try {
+                        newProduct.setName(productName);
+                    } catch (Exception e) {
+                        newProduct.setName("");
+                        Log.d("DEBUG productName: ", e.toString());
+                    }
 
-                    //set Amount
+                    //setting Amount
                     try {
                         newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
                         //Log.d("DEBUG editAmount ", editAmount.getText().toString());
                     } catch (NumberFormatException e) {
                         newProduct.setQuantity(0);
-                        //Log.d("DEBUG editAmount: ", "not a number");
+                        Log.d("DEBUG editAmount: ", "not a number");
                     }
 
-                    //set Measurment
+                    //setting measurement
                     try {
-                        newProduct.setQuantity(Integer.parseInt(inputProductAmount.getText().toString()));
-                        //Log.d("DEBUG editAmount ", editAmount.getText().toString());
-                    } catch (NumberFormatException e) {
-                        newProduct.setQuantity(0);
-                        //Log.d("DEBUG editAmount: ", "not a number");
+                        newProduct.setMeasurement((String) spinnerProductMeasure.getSelectedItem());
+                    } catch (Exception e) {
+                        newProduct.setMeasurement("pcs");
+                        Log.d("DEBUG productMeasure: ", e.toString());
                     }
 
-                    if (spinnerProductMeasure.getSelectedItemPosition() == 0) {
-                        newProduct.setMeasurment(prefMeasure);
-                    } else {
-                        newProduct.setMeasurment((String) spinnerProductMeasure.getSelectedItem());
-                    }
 
                     //pushing the new list to firebase
                     productListRef.push().setValue(newProduct);
@@ -289,10 +281,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==1) //exited our preference screen
         {
-            SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-            final String prefMeasure = prefs.getString("measure", "");
-
-            spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
+            setMeasurementSpinnerValue();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -306,14 +295,13 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedState) {
         super.onRestoreInstanceState(savedState);
         this.key = savedState.getString("key");
-
     }
 
     //function to start Share activity
     private void setShareIntent(String product){
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain"); //MIME type
-        intent.putExtra(Intent.EXTRA_TEXT, product); //add the text to t
+        intent.putExtra(Intent.EXTRA_TEXT, product);
         startActivity(intent);
     }
 
@@ -416,5 +404,11 @@ public class ShoppingListActivity extends AppCompatActivity {
             title = name;
         }
         getSupportActionBar().setTitle(title);
+    }
+
+    private void setMeasurementSpinnerValue(){
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+        String prefMeasure = prefs.getString(Constants.KEY_PREF_MEASUREMENT, "");
+        spinnerProductMeasure.setSelection(adapterSpinnerProductMeasure.getPosition(prefMeasure));
     }
 }

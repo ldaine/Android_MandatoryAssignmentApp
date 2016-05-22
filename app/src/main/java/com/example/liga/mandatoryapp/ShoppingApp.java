@@ -5,9 +5,6 @@ import android.content.Intent;
 
 import com.firebase.client.Firebase;
 
-/**
- * Created by Liga on 12-05-2016.
- */
 public class ShoppingApp extends Application {
 
     @Override

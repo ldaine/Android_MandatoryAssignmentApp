@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             loadLoginView();
         }
 
-
         //trying to get the userId
         try {
             userId = mRef.getAuth().getUid();
@@ -53,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
             loadLoginView();
         }
 
-        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
-        setActionBarTitle(prefs.getString(Constants.KEY_PREF_NAME, ""));
+        setActionBarTitle();
 
         /*set bindings*/
         inputShoppingListName = (EditText) findViewById(R.id.inputShoppingListName);
@@ -79,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String key = shoppinglistFirebaseAdapter.getRef(position).getKey();
-                //Log.i("position", String.value);
                 Intent intent = new Intent(MainActivity.this, ShoppingListActivity.class);
                 intent.putExtra("key", key);
 
@@ -156,8 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
-        setActionBarTitle(prefs.getString(Constants.KEY_PREF_NAME, ""));
+        setActionBarTitle();
         super.onResume();
     }
 
@@ -168,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setActionBarTitle(String prefName){
+    private void setActionBarTitle(){
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
+        String prefName = prefs.getString(Constants.KEY_PREF_NAME, "");
         String title;
         if(prefName.equals("")){
             title = "My Lists";

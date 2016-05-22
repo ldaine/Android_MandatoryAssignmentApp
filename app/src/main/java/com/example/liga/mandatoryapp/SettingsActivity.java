@@ -2,15 +2,13 @@ package com.example.liga.mandatoryapp;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     Firebase ref = new Firebase(Constants.FIREBASE_URL);
@@ -23,14 +21,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //The name chosen below is important - it should match
-        //the name in the MainActivity
         PreferenceManager manager = getPreferenceManager();
         manager.setSharedPreferencesName(Constants.SHARED_PREF_NAME);
-        //Adding the layout from the xml file
         oldEmail = manager.getSharedPreferences().getString(Constants.KEY_PREF_EMAIL, "");
         password = manager.getSharedPreferences().getString(Constants.KEY_PREF_PASSWORD, "");
 
+        //Adding the layout from the xml file
         addPreferencesFromResource(R.xml.prefs);
     }
     //listener to change the email and password when the preferences are for email and password are changed
@@ -59,7 +55,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     SharedPreferences sharedPref = getSharedPreferences(Constants.SHARED_PREF_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(Constants.KEY_PREF_EMAIL, oldEmail);
-                    editor.commit();
+                    editor.apply();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                    builder.setMessage("The Email could not be changed")
+                            .setTitle("Error")
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             });
 
