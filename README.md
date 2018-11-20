@@ -20,7 +20,8 @@ After the product list is cleared the list items cannot be returned as a copy of
 Deleting an item is done by using Event listener on Remove button. The function which is set in action makes a copy of the product and deletes it from Firebase. 
 If Snackbar ‘UNDO’ button is used, the previously saved product is pushed back to FireBase. 
 The order of the products doesn’t stay the same though. To achieve that each product should have an Priority. 
-##5	Launcher Icon
+
+## 5	Launcher Icon
 The place where it is possible to define global App settings is file called AndroidManifest.xml. 
 Here you can define also which image file should be used as icon for the app. 
 
@@ -36,9 +37,9 @@ To save the dialog state on orientation change the setRetainInstance(true) neede
 The product List can be shared from the List Detail View – ShoppingListActivity View - 
 by clicking the share button in the ActionBar. 
  
-When you click the icon, two functions are called: 
-•	convertListToString(), which converts the list entries to one string.
-•	setShareIntent(), which creates the intent and calls the activity. 
+When you click the icon, two functions are called:
+* convertListToString(), which converts the list entries to one string.
+* setShareIntent(), which creates the intent and calls the activity. 
  
 convertListToString(): The function loops through List adapter and adds each products string value to a single string. To get the list item from Firebase Adapter, I use build in getItem() method.
  
@@ -58,8 +59,8 @@ Measurement sets the default measurement to use in the spinner when the Shopping
 
 ## 8.4	Other
 Following Preferences are for test purposes and not used in the App itself.
-•	Gender – radio button list
-•	Sound Enabled – checkbox
+* Gender – radio button list
+* Sound Enabled – checkbox
 
 ## 9	FireBase
 All the data are stored in FireBase. Each user has its own node in the tree. The user node is created when the user signs up. 
